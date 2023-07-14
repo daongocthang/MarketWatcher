@@ -3,12 +3,11 @@ package com.standalone.tradingplan.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,17 +15,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.standalone.droid.adapters.RecyclerItemTouchHelper;
 import com.standalone.droid.dbase.DatabaseManager;
 import com.standalone.droid.utils.Alerts;
-import com.standalone.droid.utils.ViewUtils;
 import com.standalone.tradingplan.R;
 import com.standalone.tradingplan.adapters.OrderAdapter;
-import com.standalone.tradingplan.database.OrderTableHandler;
+import com.standalone.tradingplan.database.OrderDb;
 import com.standalone.tradingplan.models.Order;
+import com.standalone.tradingplan.models.StockInfo;
 
-import java.util.zip.Inflater;
+import java.lang.reflect.Field;
 
 public class MainActivity extends AppCompatActivity {
 
-    OrderTableHandler dbHandler;
+    OrderDb dbHandler;
     OrderAdapter adapter;
 
     @Override
@@ -34,7 +33,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHandler = new OrderTableHandler(DatabaseManager.getDatabase(this));
+        StockInfo stockInfo = new StockInfo();
+        try {
+            for (Field field : stockInfo.getClass().getFields()) {
+                Object value = field.get(stockInfo);
+                value = (field.getType().isAssignableFrom(String.class)) ? "TEXT" : "INTEGER";
+                Log.e("Broker", field.getName() + ": " + value);
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+        dbHandler = new OrderDb(DatabaseManager.getDatabase(this));
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         adapter = new OrderAdapter(this, dbHandler);

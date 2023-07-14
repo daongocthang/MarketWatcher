@@ -17,8 +17,10 @@ import com.standalone.droid.dbase.DatabaseManager;
 import com.standalone.droid.utils.Humanize;
 import com.standalone.droid.utils.ViewUtils;
 import com.standalone.tradingplan.R;
-import com.standalone.tradingplan.database.OrderTableHandler;
+import com.standalone.tradingplan.database.OrderDb;
 import com.standalone.tradingplan.models.Order;
+import com.standalone.tradingplan.models.StockInfo;
+import com.standalone.tradingplan.requests.Broker;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -132,7 +134,7 @@ public class EditorActivity extends AppCompatActivity {
         order.setType(Order.Type.valueOf(selOrderType.getSelectedItem().toString()));
         order.setMessage(edtMessage.getText().toString());
 
-        OrderTableHandler handler = new OrderTableHandler(DatabaseManager.getDatabase(this));
+        OrderDb handler = new OrderDb(DatabaseManager.getDatabase(this));
         if (isUpdate) {
             handler.update(order);
         } else {
@@ -144,5 +146,19 @@ public class EditorActivity extends AppCompatActivity {
         finish();
     }
 
+    private void pullStockInfo(){
 
+
+        Broker.fetchStockInfo(this, new Broker.OnResponseListener<StockInfo[]>() {
+            @Override
+            public void onResponse(StockInfo[] stockInfoArray) {
+
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+    }
 }

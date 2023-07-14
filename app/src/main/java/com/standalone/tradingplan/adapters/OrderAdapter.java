@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.standalone.droid.adapters.AdapterFilterable;
 import com.standalone.droid.utils.Humanize;
 import com.standalone.tradingplan.R;
-import com.standalone.tradingplan.database.OrderTableHandler;
+import com.standalone.tradingplan.database.OrderDb;
 import com.standalone.tradingplan.models.Order;
 
 import java.util.Collections;
@@ -21,9 +21,9 @@ import java.util.List;
 
 public class OrderAdapter extends AdapterFilterable<Order, OrderAdapter.ViewHolder> {
 
-    private final OrderTableHandler dbHandler;
+    private final OrderDb dbHandler;
 
-    public OrderAdapter(Context context, OrderTableHandler dbHandler) {
+    public OrderAdapter(Context context, OrderDb dbHandler) {
         super(context);
         this.dbHandler = dbHandler;
 
@@ -71,6 +71,7 @@ public class OrderAdapter extends AdapterFilterable<Order, OrderAdapter.ViewHold
         holder.tvPrice.setText(Humanize.doubleComma(order.getPrice()));
         holder.tvShares.setText(Humanize.intComma(order.getShares()));
         holder.tvDate.setText(order.getDate());
+        holder.tvMessage.setText(order.getMessage());
         holder.tvOrderType.setText(order.getType().toString());
 
         int colorNegative = ContextCompat.getColor(getContext(), R.color.negative);
@@ -91,7 +92,9 @@ public class OrderAdapter extends AdapterFilterable<Order, OrderAdapter.ViewHold
         TextView tvShares;
         TextView tvDate;
         TextView tvOrderType;
+        TextView tvMessage;
         ImageView imWarning;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -100,6 +103,7 @@ public class OrderAdapter extends AdapterFilterable<Order, OrderAdapter.ViewHold
             tvShares = itemView.findViewById(R.id.tv_shares);
             tvDate = itemView.findViewById(R.id.tv_date);
             tvOrderType = itemView.findViewById(R.id.tv_order_type);
+            tvMessage = itemView.findViewById(R.id.tv_message);
             imWarning = itemView.findViewById(R.id.ic_warning);
         }
     }

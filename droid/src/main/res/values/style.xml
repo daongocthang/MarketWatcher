@@ -29,4 +29,5 @@
     <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/colorSecondary</item>
     </style>
+
 </resources>

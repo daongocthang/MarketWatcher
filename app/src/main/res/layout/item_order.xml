@@ -60,6 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="50dp"
+                android:layout_centerInParent="true"
                 android:orientation="vertical">
 
                 <TextView
@@ -81,7 +82,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+                android:layout_alignParentStart="true"
                 android:minWidth="50dp"
                 android:orientation="vertical">
 
@@ -100,17 +101,50 @@
                     android:textColor="@color/black"
                     android:textSize="18sp" />
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:minWidth="50dp"
+                android:orientation="vertical">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lb_market"
+                    android:textAlignment="textEnd" />
 
+                <TextView
+                    android:id="@+id/tv_market"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/zero"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/negative"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            >
+            <TextView
+                android:id="@+id/tv_message"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/symbol"
+                android:layout_gravity="bottom"
+                android:textSize="14sp"
+                android:textColor="@color/secondary"
+                android:paddingStart="6dp"
+                />
             <ImageView
                 android:id="@+id/ic_warning"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
-                android:layout_marginEnd="20dp"
                 android:src="@drawable/ic_danger" />
-
-        </RelativeLayout>
+        </LinearLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.cardview.widget.CardView>

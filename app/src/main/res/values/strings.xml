@@ -14,6 +14,7 @@
     <string name="lb_symbol">Symbol</string>
     <string name="lb_price">Price</string>
     <string name="lb_shares">Shares</string>
+    <string name="lb_market">Market</string>
     <string name="lb_date">Date</string>
     <string name="lb_status">Status</string>
     <string name="lb_message">Message</string>

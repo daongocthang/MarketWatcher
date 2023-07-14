@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.standalone.droid.dbase.SqliteTableHandler;
 import com.standalone.tradingplan.models.Order;
 
-public class OrderTableHandler extends SqliteTableHandler<Order> {
+public class OrderDb extends SqliteTableHandler<Order> {
     static final String TBL_NAME = "tbl_orders";
     static final String COL_ID = "id";
     static final String COL_SYMBOL = "symbol";
@@ -18,7 +18,7 @@ public class OrderTableHandler extends SqliteTableHandler<Order> {
     static final String COL_TYPE = "type";
     static final String COL_DATE = "date";
 
-    public OrderTableHandler(SQLiteDatabase db) {
+    public OrderDb(SQLiteDatabase db) {
         super(db, new SqliteTableHandler.MetaData(TBL_NAME,
                 new String[]{
                         COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT",
