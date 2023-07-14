@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Trading Plan</string>
+    <string name="activity_editor">Editor</string>
+    <!-- Samples -->
+    <string name="symbol">AAA</string>
+    <string name="zero">0.00</string>
+    <string name="sell">SELL</string>
+    <string name="date">YYYY-MM-DD</string>
+    <string-array name="order_type_array">
+        <item>SELL</item>
+        <item>BUY</item>
+    </string-array>
+    <!-- Labels -->
+    <string name="lb_symbol">Symbol</string>
+    <string name="lb_price">Price</string>
+    <string name="lb_shares">Shares</string>
+    <string name="lb_date">Date</string>
+    <string name="lb_status">Status</string>
+    <string name="lb_message">Message</string>
+    <string name="lb_order_type">Type</string>
+    <string name="lb_save">Save</string>
+    <string name="lb_cancel">Type</string>
+    <string name="item1">item1</string>
+
+</resources>

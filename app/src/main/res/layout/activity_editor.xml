@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="20dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btSave">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/grp_symbol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                android:minHeight="60dp">
+
+                <EditText
+                    android:id="@+id/ed_symbol"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/com_outline_box"
+                    android:imeOptions="actionNext"
+                    android:singleLine="true"
+                    android:maxLength="3"
+                    android:padding="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white"
+                    android:paddingHorizontal="5dp"
+                    android:text="@string/lb_symbol"
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <ImageButton
+                    android:id="@+id/bt_cancel_symbol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="15dp"
+                    android:background="@null"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_cancel" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/grp_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/grp_symbol"
+                android:layout_marginTop="8dp"
+                android:minHeight="60dp">
+
+                <TextView
+                    android:id="@+id/ed_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/com_outline_box"
+                    android:padding="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white"
+                    android:paddingHorizontal="5dp"
+                    android:text="@string/lb_date"
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <ImageButton
+                    android:id="@+id/bt_date_picker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="15dp"
+                    android:background="@null"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_calendar" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/grp_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/grp_date"
+                android:layout_marginTop="8dp"
+                android:minHeight="60dp">
+
+                <EditText
+                    android:id="@+id/ed_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/com_outline_box"
+                    android:inputType="numberDecimal"
+                    android:maxLength="6"
+                    android:padding="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white"
+                    android:paddingHorizontal="5dp"
+                    android:text="@string/lb_price"
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <ImageButton
+                    android:id="@+id/bt_cancel_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="15dp"
+                    android:background="@null"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_cancel" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/grp_shares"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/grp_price"
+                android:layout_marginTop="8dp"
+                android:minHeight="60dp">
+
+
+                <EditText
+                    android:id="@+id/ed_shares"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/com_outline_box"
+                    android:padding="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white"
+                    android:paddingHorizontal="5dp"
+                    android:text="@string/lb_shares"
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <ImageButton
+                    android:id="@+id/bt_cancel_shares"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="15dp"
+                    android:background="@null"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_cancel" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/grp_order_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/grp_shares"
+                android:layout_marginTop="8dp"
+                android:minHeight="60dp">
+
+                <Spinner
+                    android:id="@+id/sel_order_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/com_outline_box"
+                    android:padding="10dp"
+                    android:spinnerMode="dropdown" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white"
+                    android:paddingHorizontal="5dp"
+                    android:text="@string/lb_order_type"
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="15dp"
+                    android:background="@null"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_arrow_drop_down"
+                    android:translationZ="-10dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/grp_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/grp_order_type"
+                android:layout_marginTop="8dp"
+                android:minHeight="60dp">
+
+                <EditText
+                    android:id="@+id/ed_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/com_outline_box"
+                    android:imeOptions="actionNext"
+                    android:padding="10dp"
+                    android:paddingBottom="45dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white"
+                    android:paddingHorizontal="5dp"
+                    android:text="@string/lb_message"
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <ImageButton
+                    android:id="@+id/bt_cancel_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="15dp"
+                    android:background="@null"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_cancel" />
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_suggestion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/grp_shares"
+                android:background="@android:color/white"
+                android:elevation="4dp"
+                android:outlineProvider="bounds" />
+        </RelativeLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginVertical="8dp"
+        android:background="@drawable/ui_button"
+        android:text="@string/lb_save"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
+
+</RelativeLayout>
