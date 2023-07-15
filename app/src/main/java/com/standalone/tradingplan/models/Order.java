@@ -23,6 +23,9 @@ public class Order implements Serializable, Comparable<Order> {
     Type type;
     String date;
 
+    String stockNo;
+
+
 
     public int getId() {
         return id;
@@ -80,5 +83,11 @@ public class Order implements Serializable, Comparable<Order> {
         this.type = type;
     }
 
+    public String getStockNo() {
+        return stockNo;
+    }
 
+    public void setStockNo(String stockNo) {
+        this.stockNo = stockNo;
+    }
 }

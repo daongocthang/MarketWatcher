@@ -5,4 +5,6 @@
     <color name="colorAccent">#1C1E21</color>
     <color name="colorDanger">#e41e3f</color>
     <color name="colorSecondary">@android:color/darker_gray</color>
+    <color name="colorBase">@android:color/white</color>
+
 </resources>

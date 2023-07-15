@@ -17,6 +17,7 @@ public class OrderDb extends SqliteTableHandler<Order> {
     static final String COL_MSG = "message";
     static final String COL_TYPE = "type";
     static final String COL_DATE = "date";
+    static final String COL_STOCK_NO = "stockNo";
 
     public OrderDb(SQLiteDatabase db) {
         super(db, new SqliteTableHandler.MetaData(TBL_NAME,
@@ -27,19 +28,23 @@ public class OrderDb extends SqliteTableHandler<Order> {
                         COL_SHARES + " INTEGER",
                         COL_MSG + " TEXT",
                         COL_TYPE + " TEXT",
+                        COL_STOCK_NO + " TEXT",
                         COL_DATE + " TEXT"
                 }));
+
+        init();
     }
 
     @SuppressLint("Range")
     @Override
-    public Order cursorToData(Cursor curs) {
+    public Order from(Cursor curs) {
         Order newOrder = new Order();
         newOrder.setId(curs.getInt(curs.getColumnIndex(COL_ID)));
         newOrder.setSymbol(curs.getString(curs.getColumnIndex(COL_SYMBOL)));
         newOrder.setPrice(curs.getDouble(curs.getColumnIndex(COL_PRICE)));
         newOrder.setShares(curs.getInt(curs.getColumnIndex(COL_SHARES)));
         newOrder.setMessage(curs.getString(curs.getColumnIndex(COL_MSG)));
+        newOrder.setStockNo(curs.getString(curs.getColumnIndex(COL_STOCK_NO)));
         newOrder.setType(Order.Type.valueOf(curs.getString(curs.getColumnIndex(COL_TYPE))));
         newOrder.setDate(curs.getString(curs.getColumnIndex(COL_DATE)));
 
@@ -47,29 +52,27 @@ public class OrderDb extends SqliteTableHandler<Order> {
     }
 
     @Override
-    public ContentValues convertToContentValues(Order order) {
+    public ContentValues convert(Order order) {
         ContentValues cv = new ContentValues();
         cv.put(COL_SYMBOL, order.getSymbol());
         cv.put(COL_PRICE, order.getPrice());
         cv.put(COL_SHARES, order.getShares());
         cv.put(COL_MSG, order.getMessage());
+        cv.put(COL_STOCK_NO, order.getStockNo());
         cv.put(COL_TYPE, order.getType().toString());
         cv.put(COL_DATE, order.getDate());
 
         return cv;
     }
 
-    @Override
     public void insert(Order order) {
-        db.insert(TBL_NAME, null, convertToContentValues(order));
+        db.insert(TBL_NAME, null, convert(order));
     }
 
-    @Override
     public void update(Order order) {
-        db.update(TBL_NAME, convertToContentValues(order), COL_ID + " = ?", new String[]{String.valueOf(order.getId())});
+        db.update(TBL_NAME, convert(order), COL_ID + " = ?", new String[]{String.valueOf(order.getId())});
     }
 
-    @Override
     public void remove(int id) {
         db.delete(TBL_NAME, COL_ID + " = ?", new String[]{String.valueOf(id)});
     }

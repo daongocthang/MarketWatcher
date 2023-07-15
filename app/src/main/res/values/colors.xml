@@ -14,4 +14,9 @@
     <color name="negative">#e41e3f</color>
     <color name="position">#31A24C</color>
     <color name="divider">#CED0D4</color>
+    <color name="text_up">#078c54</color>
+    <color name="text_down">#ff0017</color>
+    <color name="text_cell">#be00be</color>
+    <color name="text_floor">#088db7</color>
+    <color name="text_ref">#e78b03</color>
 </resources>

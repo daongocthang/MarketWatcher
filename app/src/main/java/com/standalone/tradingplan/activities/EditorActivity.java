@@ -1,8 +1,10 @@
 package com.standalone.tradingplan.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -18,26 +20,35 @@ import com.standalone.droid.utils.Humanize;
 import com.standalone.droid.utils.ViewUtils;
 import com.standalone.tradingplan.R;
 import com.standalone.tradingplan.database.OrderDb;
+import com.standalone.tradingplan.database.StockDb;
 import com.standalone.tradingplan.models.Order;
 import com.standalone.tradingplan.models.StockInfo;
 import com.standalone.tradingplan.requests.Broker;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class EditorActivity extends AppCompatActivity {
     Spinner selOrderType;
-    EditText edtSymbol;
+    AutoCompleteTextView edtSymbol;
     EditText edtPrice;
     EditText edtShares;
     EditText edtMessage;
     TextView tvDate;
 
+    List<String> stockCodes;
+
 
     boolean isUpdate;
 
     int orderId;
+
+    List<StockInfo> stockInfoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +65,14 @@ public class EditorActivity extends AppCompatActivity {
         Button btnSave = findViewById(R.id.btSave);
         ImageButton btnDatePicker = findViewById(R.id.bt_date_picker);
 
+
+        stockInfoList = new StockDb(DatabaseManager.getDatabase(this)).fetchAll();
+        stockCodes = new ArrayList<>();
+        stockInfoList.forEach(s -> stockCodes.add(s.code));
+
+        edtSymbol.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, stockCodes));
+
+
         View view = getWindow().getDecorView().getRootView();
 
         ViewUtils.addCancelButton(view, edtSymbol, R.id.bt_cancel_symbol);
@@ -62,7 +81,9 @@ public class EditorActivity extends AppCompatActivity {
         ViewUtils.addCancelButton(view, edtMessage, R.id.bt_cancel_message);
 
         final RecyclerView recyclerView = findViewById(R.id.rv_suggestion);
+        recyclerView.setVisibility(View.VISIBLE);
         ViewUtils.setNumberSuggestion(this, edtShares, recyclerView, 1, 5, true);
+
 
         // Fill fields if exists
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -98,13 +119,16 @@ public class EditorActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!ViewUtils.validateRequiredField(edtSymbol) ||
-                        !ViewUtils.validateRequiredField(edtPrice) ||
-                        !ViewUtils.validateRequiredField(edtShares)) {
+                if (!ViewUtils.validateRequiredField(edtSymbol) || !ViewUtils.validateRequiredField(edtPrice) || !ViewUtils.validateRequiredField(edtShares)) {
                     return;
                 }
 
-                onSave();
+                //TODO: validate Symbol field
+                if (stockCodes.contains(edtSymbol.getText().toString())) {
+                    onSave();
+                } else {
+                    edtSymbol.setError("No code found matching the query", null);
+                }
             }
         });
     }
@@ -126,7 +150,10 @@ public class EditorActivity extends AppCompatActivity {
             inputShares = 0;
         }
 
+        StockInfo stockInfo = stockInfoList.stream().filter(s -> s.code.equals(inputSymbol)).findFirst().orElse(null);
+
         Order order = new Order();
+        if (stockInfo != null) order.setStockNo(stockInfo.stockNo);
         order.setSymbol(inputSymbol);
         order.setPrice(inputPrice);
         order.setShares(inputShares);
@@ -146,19 +173,4 @@ public class EditorActivity extends AppCompatActivity {
         finish();
     }
 
-    private void pullStockInfo(){
-
-
-        Broker.fetchStockInfo(this, new Broker.OnResponseListener<StockInfo[]>() {
-            @Override
-            public void onResponse(StockInfo[] stockInfoArray) {
-
-            }
-
-            @Override
-            public void onError() {
-
-            }
-        });
-    }
 }

@@ -161,7 +161,7 @@ public class ViewUtils {
 
     public static boolean validateRequiredField(EditText edt) {
         if (edt.getText().toString().equals("")) {
-            edt.setError("This field is required");
+            edt.setError("This field is required",null);
             return false;
         }
 

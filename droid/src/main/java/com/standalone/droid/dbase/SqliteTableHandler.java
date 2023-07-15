@@ -15,12 +15,20 @@ public abstract class SqliteTableHandler<T> {
     public SqliteTableHandler(SQLiteDatabase db, MetaData metaData) {
         this.metaData = metaData;
         this.db = db;
+    }
+
+    public SqliteTableHandler(SQLiteDatabase db) {
+        this.db = db;
+    }
+
+    public void init() {
         db.execSQL(this.metaData.getCreateTableStmt());
     }
 
-    public abstract T cursorToData(Cursor cursor);
 
-    public abstract ContentValues convertToContentValues(T t);
+    public abstract T from(Cursor cursor);
+
+    public abstract ContentValues convert(T t);
 
     public int getCount() {
         return (int) DatabaseUtils.queryNumEntries(db, metaData.getName());
@@ -35,7 +43,7 @@ public abstract class SqliteTableHandler<T> {
             if (curs != null) {
                 if (curs.moveToFirst()) {
                     do {
-                        res.add(cursorToData(curs));
+                        res.add(from(curs));
                     } while (curs.moveToNext());
                 }
             }
@@ -47,12 +55,6 @@ public abstract class SqliteTableHandler<T> {
         return res;
     }
 
-    public abstract void insert(T t);
-
-    public abstract void update(T t);
-
-    public abstract void remove(int id);
-
     public static class MetaData {
         private final String tableName;
         private final String[] colDefinitions;
@@ -62,14 +64,9 @@ public abstract class SqliteTableHandler<T> {
             this.colDefinitions = colDefinitions;
         }
 
-        public String getCreateTableStmt() {
+        private String getCreateTableStmt() {
             return "CREATE TABLE IF NOT EXISTS " + tableName + "(" + String.join(", ", colDefinitions) + ");";
         }
-
-        public String getDropTableStmt() {
-            return "DROP TABLE IF EXISTS " + tableName;
-        }
-
 
         public String getName() {
             return tableName;
