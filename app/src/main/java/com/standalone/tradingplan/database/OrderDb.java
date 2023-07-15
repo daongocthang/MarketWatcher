@@ -27,7 +27,7 @@ public class OrderDb extends SqliteTableHandler<Order> {
                         COL_PRICE + " INTEGER",
                         COL_SHARES + " INTEGER",
                         COL_MSG + " TEXT",
-                        COL_TYPE + " TEXT",
+                        COL_TYPE + " INTEGER",
                         COL_STOCK_NO + " TEXT",
                         COL_DATE + " TEXT"
                 }));
@@ -45,7 +45,7 @@ public class OrderDb extends SqliteTableHandler<Order> {
         newOrder.setShares(curs.getInt(curs.getColumnIndex(COL_SHARES)));
         newOrder.setMessage(curs.getString(curs.getColumnIndex(COL_MSG)));
         newOrder.setStockNo(curs.getString(curs.getColumnIndex(COL_STOCK_NO)));
-        newOrder.setType(Order.Type.valueOf(curs.getString(curs.getColumnIndex(COL_TYPE))));
+        newOrder.setType(curs.getInt(curs.getColumnIndex(COL_TYPE)));
         newOrder.setDate(curs.getString(curs.getColumnIndex(COL_DATE)));
 
         return newOrder;
@@ -59,7 +59,7 @@ public class OrderDb extends SqliteTableHandler<Order> {
         cv.put(COL_SHARES, order.getShares());
         cv.put(COL_MSG, order.getMessage());
         cv.put(COL_STOCK_NO, order.getStockNo());
-        cv.put(COL_TYPE, order.getType().toString());
+        cv.put(COL_TYPE, order.getType());
         cv.put(COL_DATE, order.getDate());
 
         return cv;

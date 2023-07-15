@@ -9,7 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
-import com.standalone.droid.requests.HttpVolley;
+import com.standalone.droid.utils.requests.HttpVolley;
 import com.standalone.tradingplan.models.StockInfo;
 import com.standalone.tradingplan.models.StockRealTime;
 
@@ -82,13 +82,13 @@ public class Broker {
 
         try {
             JSONObject jsonBody = new JSONObject(body.replace("'", "\""));
-//            Log.i(TAG, jsonBody.toString());
+            Log.i(TAG, jsonBody.toString());
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
                         JSONArray data = response.getJSONObject("data").getJSONArray("stockRealtimesByIds");
-//                        Log.e(TAG, "StockRealTIme: " + data.toString());
+                        Log.e(TAG, "StockRealTIme: " + data.toString());
                         StockRealTime[] stockRealTimeArray = new Gson().fromJson(String.valueOf(data), StockRealTime[].class);
                         responseListener.onResponse(Arrays.stream(stockRealTimeArray).collect(Collectors.toList()));
 

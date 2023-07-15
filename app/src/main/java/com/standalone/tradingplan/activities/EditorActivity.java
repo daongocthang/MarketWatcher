@@ -1,8 +1,12 @@
 package com.standalone.tradingplan.activities;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -12,21 +16,28 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.standalone.droid.dbase.DatabaseManager;
+import com.standalone.droid.utils.Alerts;
 import com.standalone.droid.utils.Humanize;
 import com.standalone.droid.utils.ViewUtils;
 import com.standalone.tradingplan.R;
+import com.standalone.tradingplan.adapters.OrderAdapter;
 import com.standalone.tradingplan.database.OrderDb;
 import com.standalone.tradingplan.database.StockDb;
 import com.standalone.tradingplan.models.Order;
 import com.standalone.tradingplan.models.StockInfo;
+import com.standalone.tradingplan.models.StockRealTime;
 import com.standalone.tradingplan.requests.Broker;
+import com.standalone.tradingplan.utils.Watches;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,20 +51,20 @@ public class EditorActivity extends AppCompatActivity {
     EditText edtShares;
     EditText edtMessage;
     TextView tvDate;
-
-    List<String> stockCodes;
-
-
+    Map<String, String> stockMap;
+    AlertDialog progressDialog;
     boolean isUpdate;
-
     int orderId;
 
+    List<String> codeList;
     List<StockInfo> stockInfoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
+        progressDialog = Alerts.createProgressBar(this, com.standalone.droid.R.layout.simple_progress_dialog);
 
         selOrderType = findViewById(R.id.sel_order_type);
         edtSymbol = findViewById(R.id.ed_symbol);
@@ -67,11 +78,35 @@ public class EditorActivity extends AppCompatActivity {
 
 
         stockInfoList = new StockDb(DatabaseManager.getDatabase(this)).fetchAll();
-        stockCodes = new ArrayList<>();
-        stockInfoList.forEach(s -> stockCodes.add(s.code));
+        stockMap = new HashMap<>();
+        stockInfoList.forEach(s -> stockMap.put(s.code, s.stockNo));
 
-        edtSymbol.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, stockCodes));
+        codeList = new ArrayList<>(stockMap.keySet());
+        edtSymbol.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, codeList));
+        edtSymbol.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String code = edtSymbol.getText().toString();
+                if (!Watches.isNetworkAvailable(EditorActivity.this) || !stockMap.containsKey(code))
+                    return;
 
+                progressDialog.show();
+                Broker.fetchStockRealTimes(EditorActivity.this, Collections.singletonList(stockMap.get(code)), new Broker.OnResponseListener<List<StockRealTime>>() {
+                    @Override
+                    public void onResponse(List<StockRealTime> stockRealTimes) {
+                        stockRealTimes.stream().filter(s -> s.stockSymbol.equals(code))
+                                .findFirst().ifPresent(stockRealTime -> edtPrice.setHint(String.format(Locale.US, "%,.2f", (double) stockRealTime.getPrice() / 1000)));
+
+                        progressDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onError() {
+                        progressDialog.dismiss();
+                    }
+                });
+            }
+        });
 
         View view = getWindow().getDecorView().getRootView();
 
@@ -104,10 +139,9 @@ public class EditorActivity extends AppCompatActivity {
             tvDate.setText(extra.getDate());
             edtPrice.setText(Humanize.doubleComma(extra.getPrice()));
             edtShares.setText(Humanize.intComma(extra.getShares()));
-            selOrderType.setSelection(extra.getType().ordinal());
+            selOrderType.setSelection(extra.getType());
             edtMessage.setText(extra.getMessage());
         }
-
 
         btnDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,7 +158,7 @@ public class EditorActivity extends AppCompatActivity {
                 }
 
                 //TODO: validate Symbol field
-                if (stockCodes.contains(edtSymbol.getText().toString())) {
+                if (stockMap.containsKey(edtSymbol.getText().toString().toUpperCase())) {
                     onSave();
                 } else {
                     edtSymbol.setError("No code found matching the query", null);
@@ -150,15 +184,16 @@ public class EditorActivity extends AppCompatActivity {
             inputShares = 0;
         }
 
-        StockInfo stockInfo = stockInfoList.stream().filter(s -> s.code.equals(inputSymbol)).findFirst().orElse(null);
+        String stockNo = stockMap.get(inputSymbol);
 
         Order order = new Order();
-        if (stockInfo != null) order.setStockNo(stockInfo.stockNo);
+        order.setStockNo(stockNo);
+        order.setId(orderId);
         order.setSymbol(inputSymbol);
         order.setPrice(inputPrice);
         order.setShares(inputShares);
         order.setDate(tvDate.getText().toString());
-        order.setType(Order.Type.valueOf(selOrderType.getSelectedItem().toString()));
+        order.setType(selOrderType.getSelectedItemPosition());
         order.setMessage(edtMessage.getText().toString());
 
         OrderDb handler = new OrderDb(DatabaseManager.getDatabase(this));
@@ -172,5 +207,4 @@ public class EditorActivity extends AppCompatActivity {
 
         finish();
     }
-
 }

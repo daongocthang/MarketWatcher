@@ -82,18 +82,19 @@ public class OrderAdapter extends AdapterFilterable<Order, OrderAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Order order = itemList.get(position);
+        String[] orderTypeArray = getContext().getResources().getStringArray(R.array.order_type_array);
 
         holder.tvSymbol.setText(order.getSymbol());
         holder.tvOrderPrice.setText(Humanize.doubleComma(order.getPrice()));
         holder.tvShares.setText(Humanize.intComma(order.getShares()));
         holder.tvDate.setText(order.getDate());
         holder.tvMessage.setText(order.getMessage());
-        holder.tvOrderType.setText(order.getType().toString());
+        holder.tvOrderType.setText(orderTypeArray[order.getType()]);
 
 
         int colorNegative = ContextCompat.getColor(getContext(), R.color.negative);
         int colorAccent = ContextCompat.getColor(getContext(), R.color.accent);
-        holder.tvOrderType.setTextColor(order.getType().equals(Order.Type.BUY) ? colorAccent : colorNegative);
+        holder.tvOrderType.setTextColor(order.getType() == Order.BUY ? colorAccent : colorNegative);
 
         StockRealTime s = find(order.getStockNo());
         if (s != null) {
@@ -103,9 +104,9 @@ public class OrderAdapter extends AdapterFilterable<Order, OrderAdapter.ViewHold
 
             boolean hidden = true;
 
-            if (order.getPrice() <= mp && order.getType().equals(Order.Type.BUY)) {
+            if (order.getPrice() <= mp && order.getType() == Order.BUY) {
                 hidden = false;
-            } else if (order.getPrice() >= mp && order.getType().equals(Order.Type.SELL)) {
+            } else if (order.getPrice() >= mp && order.getType() == Order.SELL) {
                 hidden = false;
             }
 
@@ -128,7 +129,6 @@ public class OrderAdapter extends AdapterFilterable<Order, OrderAdapter.ViewHold
         TextView tvOrderType;
         TextView tvMessage;
         TextView tvMatchedPrice;
-
 
         ImageView imWarning;
 

@@ -3,6 +3,8 @@ package com.standalone.tradingplan.models;
 import java.io.Serializable;
 
 public class Order implements Serializable, Comparable<Order> {
+    public static int SELL = 0;
+    public static int BUY = 1;
 
     @Override
     public int compareTo(Order other) {
@@ -13,18 +15,15 @@ public class Order implements Serializable, Comparable<Order> {
         }
     }
 
-    public enum Type {BUY, SELL}
 
     int id;
     String symbol;
     double price;
     int shares;
     String message;
-    Type type;
+    int type;
     String date;
-
     String stockNo;
-
 
 
     public int getId() {
@@ -75,11 +74,11 @@ public class Order implements Serializable, Comparable<Order> {
         this.message = message;
     }
 
-    public Type getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(int type) {
         this.type = type;
     }
 
@@ -90,4 +89,5 @@ public class Order implements Serializable, Comparable<Order> {
     public void setStockNo(String stockNo) {
         this.stockNo = stockNo;
     }
+
 }

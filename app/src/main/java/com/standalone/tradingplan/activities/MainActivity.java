@@ -24,6 +24,7 @@ import com.standalone.tradingplan.models.Order;
 import com.standalone.tradingplan.models.StockInfo;
 import com.standalone.tradingplan.models.StockRealTime;
 import com.standalone.tradingplan.requests.Broker;
+import com.standalone.tradingplan.utils.Watches;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void httpRequest() {
         StockDb stockDb = new StockDb(DatabaseManager.getDatabase(this));
-        if (stockDb.getCount() > 0) return;
+        if (stockDb.getCount() > 0 || !Watches.isNetworkAvailable(this)) return;
 
         progressDialog = Alerts.createProgressBar(this, com.standalone.droid.R.layout.simple_progress_dialog);
         progressDialog.show();
@@ -118,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void asyncStockRealTimes() {
+        if (!Watches.isNetworkAvailable(this)) return;
+
         List<String> distinctList = new ArrayList<>();
         Orderdb.fetchAll().stream().filter(distinctByKey(Order::getStockNo)).forEach(s -> distinctList.add(s.getStockNo()));
 
