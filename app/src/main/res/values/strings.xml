@@ -7,8 +7,8 @@
     <string name="sell">SELL</string>
     <string name="date">YYYY-MM-DD</string>
     <string-array name="order_type_array">
-        <item>SELL</item>
-        <item>BUY</item>
+        <item>SHORT</item>
+        <item>LONG</item>
     </string-array>
     <!-- Labels -->
     <string name="lb_symbol">Symbol</string>

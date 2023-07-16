@@ -86,25 +86,7 @@ public class EditorActivity extends AppCompatActivity {
         edtSymbol.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String code = edtSymbol.getText().toString();
-                if (!Watches.isNetworkAvailable(EditorActivity.this) || !stockMap.containsKey(code))
-                    return;
-
-                progressDialog.show();
-                Broker.fetchStockRealTimes(EditorActivity.this, Collections.singletonList(stockMap.get(code)), new Broker.OnResponseListener<List<StockRealTime>>() {
-                    @Override
-                    public void onResponse(List<StockRealTime> stockRealTimes) {
-                        stockRealTimes.stream().filter(s -> s.stockSymbol.equals(code))
-                                .findFirst().ifPresent(stockRealTime -> edtPrice.setHint(String.format(Locale.US, "%,.2f", (double) stockRealTime.getPrice() / 1000)));
-
-                        progressDialog.dismiss();
-                    }
-
-                    @Override
-                    public void onError() {
-                        progressDialog.dismiss();
-                    }
-                });
+                hintPrice();
             }
         });
 
@@ -141,6 +123,8 @@ public class EditorActivity extends AppCompatActivity {
             edtShares.setText(Humanize.intComma(extra.getShares()));
             selOrderType.setSelection(extra.getType());
             edtMessage.setText(extra.getMessage());
+
+            hintPrice();
         }
 
         btnDatePicker.setOnClickListener(new View.OnClickListener() {
@@ -163,6 +147,28 @@ public class EditorActivity extends AppCompatActivity {
                 } else {
                     edtSymbol.setError("No code found matching the query", null);
                 }
+            }
+        });
+    }
+
+    private void hintPrice() {
+        String code = edtSymbol.getText().toString();
+        if (!Watches.isNetworkAvailable(EditorActivity.this) || !stockMap.containsKey(code))
+            return;
+
+        progressDialog.show();
+        Broker.fetchStockRealTimes(EditorActivity.this, Collections.singletonList(stockMap.get(code)), new Broker.OnResponseListener<List<StockRealTime>>() {
+            @Override
+            public void onResponse(List<StockRealTime> stockRealTimes) {
+                stockRealTimes.stream().filter(s -> s.stockSymbol.equals(code))
+                        .findFirst().ifPresent(stockRealTime -> edtPrice.setHint(String.format(Locale.US, "%,.2f", (double) stockRealTime.getPrice() / 1000)));
+
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onError() {
+                progressDialog.dismiss();
             }
         });
     }
