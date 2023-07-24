@@ -11,14 +11,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.Constraints;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.ExistingWorkPolicy;
-import androidx.work.NetworkType;
-import androidx.work.OutOfQuotaPolicy;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 
 import com.standalone.droid.adapters.RecyclerItemTouchHelper;
 import com.standalone.droid.dbase.DatabaseManager;
@@ -32,13 +24,11 @@ import com.standalone.tradingplan.models.StockInfo;
 import com.standalone.tradingplan.models.StockRealTime;
 import com.standalone.tradingplan.requests.Broker;
 import com.standalone.tradingplan.utils.NetworkUtils;
-import com.standalone.tradingplan.workers.StockWorker;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -54,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setWatchStocks();
 
         httpRequest();
 
@@ -145,14 +134,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private void setWatchStocks() {
-        Constraints constraints = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
-        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(StockWorker.class, 1000, TimeUnit.MILLISECONDS)
-                .setConstraints(constraints)
-                .build();
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork("DemoWorker", ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, workRequest);
     }
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
