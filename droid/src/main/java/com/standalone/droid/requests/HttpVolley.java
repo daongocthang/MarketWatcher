@@ -1,4 +1,4 @@
-package com.standalone.droid.utils.requests;
+package com.standalone.droid.requests;
 
 import android.content.Context;
 

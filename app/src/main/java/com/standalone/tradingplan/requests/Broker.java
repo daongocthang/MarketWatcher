@@ -9,7 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
-import com.standalone.droid.utils.requests.HttpVolley;
+import com.standalone.droid.requests.HttpVolley;
 import com.standalone.tradingplan.models.StockInfo;
 import com.standalone.tradingplan.models.StockRealTime;
 

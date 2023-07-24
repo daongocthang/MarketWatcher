@@ -1,10 +1,6 @@
 package com.standalone.tradingplan.activities;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,18 +21,16 @@ import com.standalone.droid.utils.Alerts;
 import com.standalone.droid.utils.Humanize;
 import com.standalone.droid.utils.ViewUtils;
 import com.standalone.tradingplan.R;
-import com.standalone.tradingplan.adapters.OrderAdapter;
 import com.standalone.tradingplan.database.OrderDb;
 import com.standalone.tradingplan.database.StockDb;
 import com.standalone.tradingplan.models.Order;
 import com.standalone.tradingplan.models.StockInfo;
 import com.standalone.tradingplan.models.StockRealTime;
 import com.standalone.tradingplan.requests.Broker;
-import com.standalone.tradingplan.utils.Watches;
+import com.standalone.tradingplan.utils.NetworkUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -153,7 +147,7 @@ public class EditorActivity extends AppCompatActivity {
 
     private void hintPrice() {
         String code = edtSymbol.getText().toString();
-        if (!Watches.isNetworkAvailable(EditorActivity.this) || !stockMap.containsKey(code))
+        if (!NetworkUtils.isNetworkAvailable(EditorActivity.this) || !stockMap.containsKey(code))
             return;
 
         progressDialog.show();

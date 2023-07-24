@@ -1,6 +1,5 @@
 package com.standalone.tradingplan.activities;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +11,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Constraints;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.OutOfQuotaPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 
 import com.standalone.droid.adapters.RecyclerItemTouchHelper;
 import com.standalone.droid.dbase.DatabaseManager;
@@ -24,17 +31,18 @@ import com.standalone.tradingplan.models.Order;
 import com.standalone.tradingplan.models.StockInfo;
 import com.standalone.tradingplan.models.StockRealTime;
 import com.standalone.tradingplan.requests.Broker;
-import com.standalone.tradingplan.utils.Watches;
+import com.standalone.tradingplan.utils.NetworkUtils;
+import com.standalone.tradingplan.workers.StockWorker;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class MainActivity extends AppCompatActivity {
-
     OrderDb Orderdb;
     OrderAdapter adapter;
 
@@ -46,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setWatchStocks();
 
         httpRequest();
 
@@ -96,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void httpRequest() {
         StockDb stockDb = new StockDb(DatabaseManager.getDatabase(this));
-        if (stockDb.getCount() > 0 || !Watches.isNetworkAvailable(this)) return;
+        if (stockDb.getCount() > 0 || !NetworkUtils.isNetworkAvailable(this)) return;
 
         progressDialog = Alerts.createProgressBar(this, com.standalone.droid.R.layout.simple_progress_dialog);
         progressDialog.show();
@@ -119,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void asyncStockRealTimes() {
-        if (!Watches.isNetworkAvailable(this)) return;
+        if (!NetworkUtils.isNetworkAvailable(this)) return;
 
         List<String> distinctList = new ArrayList<>();
         Orderdb.fetchAll().stream().filter(distinctByKey(Order::getStockNo)).forEach(s -> distinctList.add(s.getStockNo()));
@@ -136,6 +145,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void setWatchStocks() {
+        Constraints constraints = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
+        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(StockWorker.class, 1000, TimeUnit.MILLISECONDS)
+                .setConstraints(constraints)
+                .build();
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork("DemoWorker", ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, workRequest);
     }
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
@@ -169,5 +186,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
+
 
 }
