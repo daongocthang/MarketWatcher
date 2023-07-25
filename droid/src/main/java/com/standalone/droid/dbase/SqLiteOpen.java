@@ -8,10 +8,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.NonNull;
 
-public class SqliteOpen extends SQLiteOpenHelper {
+public class SqLiteOpen extends SQLiteOpenHelper {
     private final Context context;
 
-    public SqliteOpen(Context context, String dbName, int version) {
+    public SqLiteOpen(Context context, String dbName, int version) {
         super(context, dbName, null, version);
         this.context = context;
 

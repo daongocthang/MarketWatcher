@@ -4,42 +4,41 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.standalone.droid.dbase.SqliteBase;
-import com.standalone.droid.dbase.SqliteTableHandler;
-import com.standalone.tradingplan.models.Order;
+import com.standalone.droid.dbase.SqLiteBase;
+import com.standalone.droid.dbase.SqLiteHandler;
 import com.standalone.tradingplan.models.StockInfo;
 
 
-public class StockDb extends SqliteTableHandler<StockInfo> {
+public class StockDb extends SqLiteHandler<StockInfo> {
 
-    private final SqliteBase<StockInfo> sqliteBase;
+    private final SqLiteBase<StockInfo> base;
 
     public StockDb(SQLiteDatabase db) {
         super(db);
-        sqliteBase = new SqliteBase<>(StockInfo.class);
-        metaData = sqliteBase.createMetaData("tbl_stocks");
+        base = new SqLiteBase<>(StockInfo.class);
+        metaData = base.createMetaData("tbl_stocks");
         init();
     }
 
     @Override
-    public StockInfo from(Cursor cursor) {
+    public StockInfo fromResult(Cursor cursor) {
         try {
-            return sqliteBase.from(cursor);
+            return base.fromResult(cursor);
         } catch (IllegalAccessException | InstantiationException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public ContentValues convert(StockInfo stockInfo) {
+    public ContentValues createContentValues(StockInfo stockInfo) {
         try {
-            return sqliteBase.toContentValues(stockInfo);
+            return base.createContentValues(stockInfo);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void insert(StockInfo info) {
-        db.insert(metaData.getName(), null, convert(info));
+        db.insert(metaData.getName(), null, createContentValues(info));
     }
 }

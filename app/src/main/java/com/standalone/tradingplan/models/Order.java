@@ -1,5 +1,7 @@
 package com.standalone.tradingplan.models;
 
+import com.standalone.droid.dbase.Column;
+
 import java.io.Serializable;
 
 public class Order implements Serializable, Comparable<Order> {
@@ -16,15 +18,22 @@ public class Order implements Serializable, Comparable<Order> {
     }
 
 
+    @Column(primary = true)
     int id;
+    @Column
     String symbol;
+    @Column
     double price;
+    @Column
     int shares;
+    @Column
     String message;
+    @Column
     int type;
+    @Column
     String date;
+    @Column
     String stockNo;
-
 
     public int getId() {
         return id;

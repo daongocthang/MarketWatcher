@@ -8,16 +8,16 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SqliteTableHandler<T> {
+public abstract class SqLiteHandler<T> {
     protected MetaData metaData;
     protected final SQLiteDatabase db;
 
-    public SqliteTableHandler(SQLiteDatabase db, MetaData metaData) {
+    public SqLiteHandler(SQLiteDatabase db, MetaData metaData) {
         this.metaData = metaData;
         this.db = db;
     }
 
-    public SqliteTableHandler(SQLiteDatabase db) {
+    public SqLiteHandler(SQLiteDatabase db) {
         this.db = db;
     }
 
@@ -26,9 +26,9 @@ public abstract class SqliteTableHandler<T> {
     }
 
 
-    public abstract T from(Cursor cursor);
+    public abstract T fromResult(Cursor cursor);
 
-    public abstract ContentValues convert(T t);
+    public abstract ContentValues createContentValues(T t);
 
     public int getCount() {
         return (int) DatabaseUtils.queryNumEntries(db, metaData.getName());
@@ -43,7 +43,7 @@ public abstract class SqliteTableHandler<T> {
             if (curs != null) {
                 if (curs.moveToFirst()) {
                     do {
-                        res.add(from(curs));
+                        res.add(fromResult(curs));
                     } while (curs.moveToNext());
                 }
             }

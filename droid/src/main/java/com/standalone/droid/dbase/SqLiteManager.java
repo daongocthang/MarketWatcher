@@ -3,7 +3,6 @@ package com.standalone.droid.dbase;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.standalone.droid.utils.StorageUtils;
 
@@ -15,19 +14,19 @@ import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.util.Properties;
 
-public class DatabaseManager {
+public class SqLiteManager {
     @SuppressLint("StaticFieldLeak")
-    private static SqliteOpen sqliteOpenInstance;
+    private static SqLiteOpen sqLiteOpenInstance;
 
     public static SQLiteDatabase getDatabase(Context context) {
-        if (sqliteOpenInstance == null) {
+        if (sqLiteOpenInstance == null) {
             try {
-                sqliteOpenInstance = new SqliteOpen(context, getProperty(context, "database_name"), Integer.parseInt(getProperty(context, "database_version")));
+                sqLiteOpenInstance = new SqLiteOpen(context, getProperty(context, "database_name"), Integer.parseInt(getProperty(context, "database_version")));
             } catch (IOException | NumberFormatException e) {
                 e.printStackTrace();
             }
         }
-        return sqliteOpenInstance.getDatabase();
+        return sqLiteOpenInstance.getDatabase();
     }
 
     public static boolean importDB(Context context) {

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.standalone.droid.adapters.RecyclerItemTouchHelper;
-import com.standalone.droid.dbase.DatabaseManager;
+import com.standalone.droid.dbase.SqLiteManager;
 import com.standalone.droid.utils.Alerts;
 import com.standalone.tradingplan.R;
 import com.standalone.tradingplan.adapters.OrderAdapter;
@@ -33,7 +33,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class MainActivity extends AppCompatActivity {
-    OrderDb Orderdb;
+    OrderDb orderdb;
     OrderAdapter adapter;
 
     AlertDialog progressDialog;
@@ -47,10 +47,10 @@ public class MainActivity extends AppCompatActivity {
 
         httpRequest();
 
-        Orderdb = new OrderDb(DatabaseManager.getDatabase(this));
+        orderdb = new OrderDb(SqLiteManager.getDatabase(this));
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        adapter = new OrderAdapter(MainActivity.this, Orderdb);
+        adapter = new OrderAdapter(MainActivity.this, orderdb);
         recyclerView.setAdapter(adapter);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchCallback());
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void httpRequest() {
-        StockDb stockDb = new StockDb(DatabaseManager.getDatabase(this));
+        StockDb stockDb = new StockDb(SqLiteManager.getDatabase(this));
         if (stockDb.getCount() > 0 || !NetworkUtils.isNetworkAvailable(this)) return;
 
         progressDialog = Alerts.createProgressBar(this, com.standalone.droid.R.layout.simple_progress_dialog);
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         if (!NetworkUtils.isNetworkAvailable(this)) return;
 
         List<String> distinctList = new ArrayList<>();
-        Orderdb.fetchAll().stream().filter(distinctByKey(Order::getStockNo)).forEach(s -> distinctList.add(s.getStockNo()));
+        orderdb.fetchAll().stream().filter(distinctByKey(Order::getStockNo)).forEach(s -> distinctList.add(s.getStockNo()));
 
 
         Broker.fetchStockRealTimes(this, distinctList, new Broker.OnResponseListener<List<StockRealTime>>() {

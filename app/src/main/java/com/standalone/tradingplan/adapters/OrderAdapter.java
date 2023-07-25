@@ -2,7 +2,6 @@ package com.standalone.tradingplan.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,11 +17,9 @@ import com.standalone.tradingplan.R;
 import com.standalone.tradingplan.database.OrderDb;
 import com.standalone.tradingplan.models.Order;
 import com.standalone.tradingplan.models.StockRealTime;
-import com.standalone.tradingplan.requests.Broker;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 public class OrderAdapter extends AdapterFilterable<Order, OrderAdapter.ViewHolder> {
 

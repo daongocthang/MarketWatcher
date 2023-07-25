@@ -16,7 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.standalone.droid.dbase.DatabaseManager;
+import com.standalone.droid.dbase.SqLiteManager;
 import com.standalone.droid.utils.Alerts;
 import com.standalone.droid.utils.Humanize;
 import com.standalone.droid.utils.ViewUtils;
@@ -71,7 +71,7 @@ public class EditorActivity extends AppCompatActivity {
         ImageButton btnDatePicker = findViewById(R.id.bt_date_picker);
 
 
-        stockInfoList = new StockDb(DatabaseManager.getDatabase(this)).fetchAll();
+        stockInfoList = new StockDb(SqLiteManager.getDatabase(this)).fetchAll();
         stockMap = new HashMap<>();
         stockInfoList.forEach(s -> stockMap.put(s.code, s.stockNo));
 
@@ -196,7 +196,7 @@ public class EditorActivity extends AppCompatActivity {
         order.setType(selOrderType.getSelectedItemPosition());
         order.setMessage(edtMessage.getText().toString());
 
-        OrderDb handler = new OrderDb(DatabaseManager.getDatabase(this));
+        OrderDb handler = new OrderDb(SqLiteManager.getDatabase(this));
         if (isUpdate) {
             handler.update(order);
         } else {

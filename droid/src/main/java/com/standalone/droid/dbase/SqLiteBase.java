@@ -2,33 +2,45 @@ package com.standalone.droid.dbase;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.util.Log;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class SqliteBase<T> {
+public class SqLiteBase<T> {
     private final Class<T> className;
 
-    public SqliteBase(Class<T> className) {
+
+    public SqLiteBase(Class<T> className) {
         this.className = className;
     }
 
-    public SqliteTableHandler.MetaData createMetaData(String tableName) {
+    public SqLiteHandler.MetaData createMetaData(String tableName) {
         List<String> cols = new ArrayList<>();
-        cols.add("id INTEGER PRIMARY KEY AUTOINCREMENT");
+
         for (Field field : className.getFields()) {
-            cols.add(field.getName() + " " + (field.getType().isAssignableFrom(String.class) ? "TEXT" : "INTEGER"));
+            Column column = field.getAnnotation(Column.class);
+            if (column == null) continue;
+            StringBuilder builder = new StringBuilder();
+            builder.append(field.getName()).append(" ");
+            builder.append((field.getType().isAssignableFrom(String.class) ? "TEXT" : "INTEGER"));
+            if (column.primary()) {
+                builder.append(" PRIMARY KEY AUTOINCREMENT");
+            }
+
+            cols.add(builder.toString());
         }
 
-        return new SqliteTableHandler.MetaData(tableName, cols.toArray(new String[0]));
+        return new SqLiteHandler.MetaData(tableName, cols.toArray(new String[0]));
     }
 
-    public ContentValues toContentValues(T t) throws IllegalAccessException {
+    public ContentValues createContentValues(T t) throws IllegalAccessException {
         ContentValues cv = new ContentValues();
         for (Field field : className.getFields()) {
+            Column column = field.getAnnotation(Column.class);
+            if (column == null) continue;
+
             Object value = field.get(t);
             if (value != null)
                 cv.put(field.getName(), value.toString());
@@ -37,9 +49,12 @@ public class SqliteBase<T> {
         return cv;
     }
 
-    public T from(Cursor cursor) throws IllegalAccessException, InstantiationException {
+    public T fromResult(Cursor cursor) throws IllegalAccessException, InstantiationException {
         T t = className.newInstance();
         for (Field field : className.getFields()) {
+            Column column = field.getAnnotation(Column.class);
+            if (column == null) continue;
+
             int colIndex = cursor.getColumnIndex(field.getName());
             Object typeValue = null;
             Class<?> type = field.getType();
