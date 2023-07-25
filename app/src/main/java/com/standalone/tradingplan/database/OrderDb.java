@@ -4,48 +4,50 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
-import com.standalone.droid.dbase.SqLiteBase;
+import com.standalone.droid.dbase.SqLiteMaker;
 import com.standalone.droid.dbase.SqLiteHandler;
 import com.standalone.tradingplan.models.Order;
 
 public class OrderDb extends SqLiteHandler<Order> {
 
-    private final SqLiteBase<Order> base;
+    private final SqLiteMaker<Order> maker;
 
     public OrderDb(SQLiteDatabase db) {
         super(db);
-        base = new SqLiteBase<>(Order.class);
-        metaData = base.createMetaData("tbl_orders");
+        maker = new SqLiteMaker<>(Order.class);
+        metaData = maker.createMetaData("tbl_orders");
 
         init();
     }
 
     @SuppressLint("Range")
     @Override
-    public Order fromResult(Cursor curs) {
+    public Order createFromResult(Cursor curs) {
         try {
-            return base.fromResult(curs);
+            return maker.createDataClass(curs);
         } catch (IllegalAccessException | InstantiationException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public ContentValues createContentValues(Order order) {
+    public ContentValues parseContentValues(Order order) {
         try {
-            return base.createContentValues(order);
+            Log.e(getClass().getSimpleName(), order.getDate());
+            return maker.createContentValues(order);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void insert(Order order) {
-        db.insert(metaData.getName(), null, createContentValues(order));
+        db.insert(metaData.getName(), null, parseContentValues(order));
     }
 
     public void update(Order order) {
-        db.update(metaData.getName(), createContentValues(order), "id = ?", new String[]{String.valueOf(order.getId())});
+        db.update(metaData.getName(), parseContentValues(order), "id = ?", new String[]{String.valueOf(order.getId())});
     }
 
     public void remove(int id) {

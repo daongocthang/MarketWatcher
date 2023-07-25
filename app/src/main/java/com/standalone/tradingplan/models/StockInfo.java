@@ -6,7 +6,7 @@ import com.standalone.droid.dbase.Column;
 
 public class StockInfo {
     @Column(primary = true)
-    int id;
+    public int id;
 
     @Column
     @SerializedName("type")

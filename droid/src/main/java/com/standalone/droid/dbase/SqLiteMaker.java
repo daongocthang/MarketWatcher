@@ -2,24 +2,25 @@ package com.standalone.droid.dbase;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class SqLiteBase<T> {
+public class SqLiteMaker<T> {
     private final Class<T> className;
 
 
-    public SqLiteBase(Class<T> className) {
+    public SqLiteMaker(Class<T> className) {
         this.className = className;
     }
 
     public SqLiteHandler.MetaData createMetaData(String tableName) {
         List<String> cols = new ArrayList<>();
 
-        for (Field field : className.getFields()) {
+        for (Field field : className.getDeclaredFields()) {
             Column column = field.getAnnotation(Column.class);
             if (column == null) continue;
             StringBuilder builder = new StringBuilder();
@@ -37,23 +38,27 @@ public class SqLiteBase<T> {
 
     public ContentValues createContentValues(T t) throws IllegalAccessException {
         ContentValues cv = new ContentValues();
-        for (Field field : className.getFields()) {
+        for (Field field : className.getDeclaredFields()) {
             Column column = field.getAnnotation(Column.class);
-            if (column == null) continue;
-
+            if (column == null || column.primary()) continue;
+            field.setAccessible(true);
+            Log.e(getClass().getSimpleName(), field.getName());
             Object value = field.get(t);
-            if (value != null)
+            if (value != null) {
+                Log.e(getClass().getSimpleName(), value.toString());
                 cv.put(field.getName(), value.toString());
+            }
         }
 
         return cv;
     }
 
-    public T fromResult(Cursor cursor) throws IllegalAccessException, InstantiationException {
+    public T createDataClass(Cursor cursor) throws IllegalAccessException, InstantiationException {
         T t = className.newInstance();
-        for (Field field : className.getFields()) {
+        for (Field field : className.getDeclaredFields()) {
             Column column = field.getAnnotation(Column.class);
             if (column == null) continue;
+            field.setAccessible(true);
 
             int colIndex = cursor.getColumnIndex(field.getName());
             Object typeValue = null;

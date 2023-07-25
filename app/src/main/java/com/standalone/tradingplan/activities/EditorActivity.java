@@ -114,7 +114,7 @@ public class EditorActivity extends AppCompatActivity {
             edtSymbol.setText(extra.getSymbol());
             tvDate.setText(extra.getDate());
             edtPrice.setText(Humanize.doubleComma(extra.getPrice()));
-            edtShares.setText(Humanize.intComma(extra.getShares()));
+            edtShares.setText(String.format(Locale.US, "%,d",extra.getShares()));
             selOrderType.setSelection(extra.getType());
             edtMessage.setText(extra.getMessage());
 
@@ -196,11 +196,11 @@ public class EditorActivity extends AppCompatActivity {
         order.setType(selOrderType.getSelectedItemPosition());
         order.setMessage(edtMessage.getText().toString());
 
-        OrderDb handler = new OrderDb(SqLiteManager.getDatabase(this));
+        OrderDb db = new OrderDb(SqLiteManager.getDatabase(this));
         if (isUpdate) {
-            handler.update(order);
+            db.update(order);
         } else {
-            handler.insert(order);
+            db.insert(order);
         }
 
         Toast.makeText(this, "Order saved successfully.", Toast.LENGTH_SHORT).show();

@@ -1,9 +1,11 @@
 package com.standalone.droid.dbase;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +28,10 @@ public abstract class SqLiteHandler<T> {
     }
 
 
-    public abstract T fromResult(Cursor cursor);
+    @SuppressLint("Range")
+    public abstract T createFromResult(Cursor curs);
 
-    public abstract ContentValues createContentValues(T t);
+    public abstract ContentValues parseContentValues(T t);
 
     public int getCount() {
         return (int) DatabaseUtils.queryNumEntries(db, metaData.getName());
@@ -43,7 +46,7 @@ public abstract class SqLiteHandler<T> {
             if (curs != null) {
                 if (curs.moveToFirst()) {
                     do {
-                        res.add(fromResult(curs));
+                        res.add(createFromResult(curs));
                     } while (curs.moveToNext());
                 }
             }

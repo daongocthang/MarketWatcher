@@ -8,16 +8,6 @@ public class Order implements Serializable, Comparable<Order> {
     public static int SELL = 0;
     public static int BUY = 1;
 
-    @Override
-    public int compareTo(Order other) {
-        try {
-            return other.getDate().compareTo(this.getDate());
-        } catch (RuntimeException e) {
-            return this.getSymbol().compareTo(other.getSymbol());
-        }
-    }
-
-
     @Column(primary = true)
     int id;
     @Column
@@ -25,7 +15,7 @@ public class Order implements Serializable, Comparable<Order> {
     @Column
     double price;
     @Column
-    int shares;
+    long shares;
     @Column
     String message;
     @Column
@@ -34,6 +24,15 @@ public class Order implements Serializable, Comparable<Order> {
     String date;
     @Column
     String stockNo;
+
+    @Override
+    public int compareTo(Order other) {
+        try {
+            return other.getDate().compareTo(this.getDate());
+        } catch (RuntimeException e) {
+            return this.getSymbol().compareTo(other.getSymbol());
+        }
+    }
 
     public int getId() {
         return id;
@@ -67,11 +66,11 @@ public class Order implements Serializable, Comparable<Order> {
         this.price = price;
     }
 
-    public int getShares() {
+    public long getShares() {
         return shares;
     }
 
-    public void setShares(int shares) {
+    public void setShares(long shares) {
         this.shares = shares;
     }
 

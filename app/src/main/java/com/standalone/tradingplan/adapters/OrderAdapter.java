@@ -20,6 +20,7 @@ import com.standalone.tradingplan.models.StockRealTime;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class OrderAdapter extends AdapterFilterable<Order, OrderAdapter.ViewHolder> {
 
@@ -83,7 +84,7 @@ public class OrderAdapter extends AdapterFilterable<Order, OrderAdapter.ViewHold
 
         holder.tvSymbol.setText(order.getSymbol());
         holder.tvOrderPrice.setText(Humanize.doubleComma(order.getPrice()));
-        holder.tvShares.setText(Humanize.intComma(order.getShares()));
+        holder.tvShares.setText(String.format(Locale.US,"%,d", order.getShares()));
         holder.tvDate.setText(order.getDate());
         holder.tvMessage.setText(order.getMessage());
         holder.tvOrderType.setText(orderTypeArray[order.getType()]);
