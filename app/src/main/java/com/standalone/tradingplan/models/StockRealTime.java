@@ -60,7 +60,7 @@ public class StockRealTime {
     }
 
     public long getPrice() {
-        return (matchedPrice > 0 ? matchedPrice : lastMatchedPrice);
+        return (matchedPrice > 0 ? matchedPrice : refPrice);
     }
 
     @NonNull

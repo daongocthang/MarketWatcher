@@ -88,7 +88,7 @@ public class Broker {
                 public void onResponse(JSONObject response) {
                     try {
                         JSONArray data = response.getJSONObject("data").getJSONArray("stockRealtimesByIds");
-                        Log.e(TAG, "StockRealTIme: " + data.toString());
+                        // Log.e(TAG, "StockRealTime: " + data.toString());
                         StockRealTime[] stockRealTimeArray = new Gson().fromJson(String.valueOf(data), StockRealTime[].class);
                         responseListener.onResponse(Arrays.stream(stockRealTimeArray).collect(Collectors.toList()));
 

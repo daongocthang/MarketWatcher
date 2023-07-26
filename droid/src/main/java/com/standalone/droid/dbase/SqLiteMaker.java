@@ -42,10 +42,8 @@ public class SqLiteMaker<T> {
             Column column = field.getAnnotation(Column.class);
             if (column == null || column.primary()) continue;
             field.setAccessible(true);
-            Log.e(getClass().getSimpleName(), field.getName());
             Object value = field.get(t);
             if (value != null) {
-                Log.e(getClass().getSimpleName(), value.toString());
                 cv.put(field.getName(), value.toString());
             }
         }
@@ -63,11 +61,13 @@ public class SqLiteMaker<T> {
             int colIndex = cursor.getColumnIndex(field.getName());
             Object typeValue = null;
             Class<?> type = field.getType();
-            if (type.isAssignableFrom(Integer.class)) {
+            if (type.isAssignableFrom(int.class)) {
                 typeValue = cursor.getInt(colIndex);
-            } else if (type.isAssignableFrom(Long.class)) {
+            } else if (type.isAssignableFrom(long.class)) {
                 typeValue = cursor.getLong(colIndex);
-            } else if (type.isAssignableFrom(Double.class)) {
+            } else if (type.isAssignableFrom(float.class)) {
+                typeValue = cursor.getFloat(colIndex);
+            } else if (type.isAssignableFrom(double.class)) {
                 typeValue = cursor.getDouble(colIndex);
             } else if (type.isAssignableFrom(String.class)) {
                 typeValue = cursor.getString(colIndex);
