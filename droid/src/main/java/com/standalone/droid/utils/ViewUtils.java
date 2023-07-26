@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class ViewUtils {
-
-
     public static void addCancelButton(View view, EditText edt, int res) {
         ImageButton btn = view.findViewById(res);
         if (edt.getText().length() == 0) {
@@ -113,17 +111,19 @@ public class ViewUtils {
                     } else {
                         int value = Integer.parseInt(sanityText);
 
-                        int count = (sanityText.length() > skip) ? 0 : skip;
-                        while (count < limit) {
-                            count++;
-                            int nextValue = (int) (value * Math.pow(10, count));
-                            String valueAsString = String.valueOf(nextValue);
-                            if (valueAsString.length() > limit) break;
-                            itemList.add(String.format(Locale.US, "%,d", nextValue));
-                        }
+                        if (value > 0) {
+                            int count = (sanityText.length() > skip) ? 0 : skip;
+                            while (count < limit) {
+                                count++;
+                                int nextValue = (int) (value * Math.pow(10, count));
+                                String valueAsString = String.valueOf(nextValue);
+                                if (valueAsString.length() > limit) break;
+                                itemList.add(String.format(Locale.US, "%,d", nextValue));
+                            }
 
-                        if (reverse) Collections.reverse(itemList);
-                        adapter.setItemList(itemList);
+                            if (reverse) Collections.reverse(itemList);
+                            adapter.setItemList(itemList);
+                        }
                     }
 
                     String newText = String.format(Locale.US, "%,d", Integer.parseInt(sanityText));

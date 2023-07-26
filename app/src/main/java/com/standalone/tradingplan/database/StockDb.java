@@ -14,7 +14,7 @@ public class StockDb extends SqLiteBase<StockInfo> {
 
     public void insert(StockInfo info) {
         try {
-            getDb().insert(getTableName(), null, parseContentValues(info));
+            getDatabase().insert(getTableName(), null, parseContentValues(info));
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }

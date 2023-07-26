@@ -12,7 +12,7 @@ public class OrderDb extends SqLiteBase<Order> {
     }
     public void insert(Order order) {
         try {
-            getDb().insert(getTableName(), null, parseContentValues(order));
+            getDatabase().insert(getTableName(), null, parseContentValues(order));
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -20,14 +20,14 @@ public class OrderDb extends SqLiteBase<Order> {
 
     public void update(Order order) {
         try {
-            getDb().update(getTableName(), parseContentValues(order), "id = ?", new String[]{String.valueOf(order.getId())});
+            getDatabase().update(getTableName(), parseContentValues(order), "id = ?", new String[]{String.valueOf(order.getId())});
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void remove(int id) {
-        getDb().delete(getTableName(), "id = ?", new String[]{String.valueOf(id)});
+        getDatabase().delete(getTableName(), "id = ?", new String[]{String.valueOf(id)});
     }
 
 }

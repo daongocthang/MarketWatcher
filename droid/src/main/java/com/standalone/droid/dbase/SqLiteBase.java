@@ -56,7 +56,7 @@ public class SqLiteBase<T> {
         return tableName;
     }
 
-    public SQLiteDatabase getDb() {
+    public SQLiteDatabase getDatabase() {
         return db;
     }
 
@@ -76,7 +76,7 @@ public class SqLiteBase<T> {
         return cv;
     }
 
-    private T createFromResult(Cursor cursor) throws IllegalAccessException, InstantiationException {
+    public T createFromResult(Cursor cursor) throws IllegalAccessException, InstantiationException {
         T t = classType.newInstance();
         for (Field field : classType.getDeclaredFields()) {
             Column column = field.getAnnotation(Column.class);
