@@ -1,57 +1,33 @@
 package com.standalone.tradingplan.database;
 
-import android.annotation.SuppressLint;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+import android.content.Context;
 
-import com.standalone.droid.dbase.SqLiteMaker;
-import com.standalone.droid.dbase.SqLiteHandler;
+import com.standalone.droid.dbase.SqLiteBase;
 import com.standalone.tradingplan.models.Order;
 
-public class OrderDb extends SqLiteHandler<Order> {
+public class OrderDb extends SqLiteBase<Order> {
 
-    private final SqLiteMaker<Order> maker;
-
-    public OrderDb(SQLiteDatabase db) {
-        super(db);
-        maker = new SqLiteMaker<>(Order.class);
-        metaData = maker.createMetaData("tbl_orders");
-
-        init();
+    public OrderDb(Context context) {
+        super(context, "tbl_orders");
     }
-
-    @SuppressLint("Range")
-    @Override
-    public Order createFromResult(Cursor curs) {
+    public void insert(Order order) {
         try {
-            return maker.createDataClass(curs);
-        } catch (IllegalAccessException | InstantiationException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public ContentValues parseContentValues(Order order) {
-        try {
-            Log.e(getClass().getSimpleName(), order.getDate());
-            return maker.createContentValues(order);
+            getDb().insert(getTableName(), null, parseContentValues(order));
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void insert(Order order) {
-        db.insert(metaData.getName(), null, parseContentValues(order));
-    }
-
     public void update(Order order) {
-        db.update(metaData.getName(), parseContentValues(order), "id = ?", new String[]{String.valueOf(order.getId())});
+        try {
+            getDb().update(getTableName(), parseContentValues(order), "id = ?", new String[]{String.valueOf(order.getId())});
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void remove(int id) {
-        db.delete(metaData.getName(), "id = ?", new String[]{String.valueOf(id)});
+        getDb().delete(getTableName(), "id = ?", new String[]{String.valueOf(id)});
     }
 
 }

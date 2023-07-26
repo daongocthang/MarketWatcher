@@ -1,45 +1,22 @@
 package com.standalone.tradingplan.database;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Context;
 
-import com.standalone.droid.dbase.SqLiteMaker;
-import com.standalone.droid.dbase.SqLiteHandler;
+import com.standalone.droid.dbase.SqLiteBase;
 import com.standalone.tradingplan.models.StockInfo;
 
 
-public class StockDb extends SqLiteHandler<StockInfo> {
+public class StockDb extends SqLiteBase<StockInfo> {
 
-    private final SqLiteMaker<StockInfo> maker;
-
-    public StockDb(SQLiteDatabase db) {
-        super(db);
-        maker = new SqLiteMaker<>(StockInfo.class);
-        metaData = maker.createMetaData("tbl_stocks");
-        init();
+    public StockDb(Context context) {
+        super(context, "tbl_stocks");
     }
 
-    @Override
-    public StockInfo createFromResult(Cursor cursor) {
+    public void insert(StockInfo info) {
         try {
-            return maker.createDataClass(cursor);
-        } catch (IllegalAccessException | InstantiationException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public ContentValues parseContentValues(StockInfo stockInfo) {
-        try {
-            return maker.createContentValues(stockInfo);
+            getDb().insert(getTableName(), null, parseContentValues(info));
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-    }
-
-
-    public void insert(StockInfo info) {
-        db.insert(metaData.getName(), null, parseContentValues(info));
     }
 }

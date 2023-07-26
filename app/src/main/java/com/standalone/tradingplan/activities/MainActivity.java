@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         httpRequest();
 
-        orderdb = new OrderDb(SqLiteManager.getDatabase(this));
+        orderdb = new OrderDb(this);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         adapter = new OrderAdapter(MainActivity.this, orderdb);
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void httpRequest() {
-        StockDb stockDb = new StockDb(SqLiteManager.getDatabase(this));
+        StockDb stockDb = new StockDb(this);
         if (stockDb.getCount() > 0 || !NetworkUtils.isNetworkAvailable(this)) return;
 
         progressDialog = Alerts.createProgressBar(this, com.standalone.droid.R.layout.simple_progress_dialog);

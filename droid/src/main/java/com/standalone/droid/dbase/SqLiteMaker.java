@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Deprecated
 public class SqLiteMaker<T> {
     private final Class<T> className;
 

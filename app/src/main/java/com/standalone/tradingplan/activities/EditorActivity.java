@@ -71,7 +71,7 @@ public class EditorActivity extends AppCompatActivity {
         ImageButton btnDatePicker = findViewById(R.id.bt_date_picker);
 
 
-        stockInfoList = new StockDb(SqLiteManager.getDatabase(this)).fetchAll();
+        stockInfoList = new StockDb(this).fetchAll();
         stockMap = new HashMap<>();
         stockInfoList.forEach(s -> stockMap.put(s.code, s.stockNo));
 
@@ -196,7 +196,7 @@ public class EditorActivity extends AppCompatActivity {
         order.setType(selOrderType.getSelectedItemPosition());
         order.setMessage(edtMessage.getText().toString());
 
-        OrderDb db = new OrderDb(SqLiteManager.getDatabase(this));
+        OrderDb db = new OrderDb(this);
         if (isUpdate) {
             db.update(order);
         } else {

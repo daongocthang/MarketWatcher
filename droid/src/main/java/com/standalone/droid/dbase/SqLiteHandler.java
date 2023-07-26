@@ -10,6 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public abstract class SqLiteHandler<T> {
     protected MetaData metaData;
     protected final SQLiteDatabase db;
