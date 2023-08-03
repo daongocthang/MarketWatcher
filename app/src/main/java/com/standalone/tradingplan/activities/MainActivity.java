@@ -1,5 +1,6 @@
 package com.standalone.tradingplan.activities;
 
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +14,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.standalone.droid.adapters.RecyclerItemTouchHelper;
-import com.standalone.droid.dbase.SqLiteManager;
+import com.standalone.droid.services.Scheduler;
 import com.standalone.droid.utils.Alerts;
 import com.standalone.tradingplan.R;
 import com.standalone.tradingplan.adapters.OrderAdapter;
@@ -22,6 +23,7 @@ import com.standalone.tradingplan.database.StockDb;
 import com.standalone.tradingplan.models.Order;
 import com.standalone.tradingplan.models.StockInfo;
 import com.standalone.tradingplan.models.StockRealTime;
+import com.standalone.tradingplan.schedules.TradingReceiver;
 import com.standalone.tradingplan.requests.Broker;
 import com.standalone.tradingplan.utils.NetworkUtils;
 
@@ -33,10 +35,15 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class MainActivity extends AppCompatActivity {
+    public final String TAG = MainActivity.this.getClass().getSimpleName();
+    static final int ALARM_REQUEST_CODE = 1;
+
     OrderDb orderdb;
     OrderAdapter adapter;
 
     AlertDialog progressDialog;
+
+    Scheduler scheduler;
 
 
     @Override
@@ -44,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        scheduler = Scheduler.from(this);
 
         httpRequest();
 
@@ -65,6 +73,14 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
         adapter.loadItemList();
         asyncStockRealTimes();
+
+        PendingIntent pendingIntent = scheduler.getBroadcast(ALARM_REQUEST_CODE, TradingReceiver.class);
+
+        if (adapter.getItemCount() > 0) {
+            scheduler.setDailyAlarm(pendingIntent, "9:00");
+        } else {
+            scheduler.cancelAlarm(pendingIntent);
+        }
     }
 
     @Override
