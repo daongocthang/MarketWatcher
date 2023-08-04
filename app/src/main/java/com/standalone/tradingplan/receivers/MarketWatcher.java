@@ -1,10 +1,10 @@
-package com.standalone.tradingplan.schedules;
+package com.standalone.tradingplan.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-public class TradingReceiver extends BroadcastReceiver {
+public class MarketWatcher extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 

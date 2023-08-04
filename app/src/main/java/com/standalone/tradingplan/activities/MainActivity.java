@@ -23,9 +23,10 @@ import com.standalone.tradingplan.database.StockDb;
 import com.standalone.tradingplan.models.Order;
 import com.standalone.tradingplan.models.StockInfo;
 import com.standalone.tradingplan.models.StockRealTime;
-import com.standalone.tradingplan.schedules.TradingReceiver;
+import com.standalone.tradingplan.receivers.MarketWatcher;
 import com.standalone.tradingplan.requests.Broker;
 import com.standalone.tradingplan.utils.NetworkUtils;
+import com.standalone.tradingplan.utils.TradingHours;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,10 +75,10 @@ public class MainActivity extends AppCompatActivity {
         adapter.loadItemList();
         asyncStockRealTimes();
 
-        PendingIntent pendingIntent = scheduler.getBroadcast(ALARM_REQUEST_CODE, TradingReceiver.class);
+        PendingIntent pendingIntent = scheduler.getBroadcast(ALARM_REQUEST_CODE, MarketWatcher.class);
 
         if (adapter.getItemCount() > 0) {
-            scheduler.setDailyAlarm(pendingIntent, "9:00");
+            scheduler.setRepeatingAlarm(pendingIntent, System.currentTimeMillis(), TradingHours.getTimeMillis());
         } else {
             scheduler.cancelAlarm(pendingIntent);
         }
