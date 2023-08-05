@@ -10,11 +10,11 @@ import android.os.Build;
 
 import java.util.Calendar;
 
-public class Scheduler {
+public class AlarmScheduler {
     private Context context;
 
-    public static Scheduler from(Context context) {
-        Scheduler self = new Scheduler();
+    public static AlarmScheduler from(Context context) {
+        AlarmScheduler self = new AlarmScheduler();
         self.context = context;
         return self;
     }

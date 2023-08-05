@@ -15,7 +15,7 @@
             android:layout_height="wrap_content">
 
             <RelativeLayout
-                android:id="@+id/grp_symbol"
+                android:id="@+id/grp_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -23,7 +23,7 @@
                 android:minHeight="60dp">
 
                 <AutoCompleteTextView
-                    android:id="@+id/ed_symbol"
+                    android:id="@+id/ed_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
@@ -41,7 +41,7 @@
                     android:layout_marginTop="5dp"
                     android:background="@color/colorBase"
                     android:paddingHorizontal="5dp"
-                    android:text="@string/lb_symbol"
+                    android:text="@string/lb_code"
                     android:textColor="@color/colorPrimaryDark" />
 
                 <ImageButton
@@ -59,7 +59,7 @@
                 android:id="@+id/grp_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/grp_symbol"
+                android:layout_below="@id/grp_code"
                 android:layout_marginTop="8dp"
                 android:minHeight="60dp">
 
@@ -93,7 +93,7 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/grp_price"
+                android:id="@+id/grp_target"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/grp_date"
@@ -101,17 +101,16 @@
                 android:minHeight="60dp">
 
                 <EditText
-                    android:id="@+id/ed_price"
+                    android:id="@+id/ed_target"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/ui_outline_box"
+                    android:hint="@string/zero"
                     android:inputType="numberDecimal"
                     android:maxLength="6"
                     android:padding="10dp"
-                    android:textColorHint="@android:color/darker_gray"
-                    android:hint="@string/zero"
-                    />
+                    android:textColorHint="@android:color/darker_gray" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -120,7 +119,7 @@
                     android:layout_marginTop="5dp"
                     android:background="@color/colorBase"
                     android:paddingHorizontal="5dp"
-                    android:text="@string/lb_price"
+                    android:text="@string/lb_target"
                     android:textColor="@color/colorPrimaryDark" />
 
                 <ImageButton
@@ -135,48 +134,10 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/grp_shares"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/grp_price"
-                android:layout_marginTop="8dp"
-                android:minHeight="60dp">
-
-
-                <EditText
-                    android:id="@+id/ed_shares"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/ui_outline_box"
-                    android:padding="10dp"                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@color/colorBase"
-                    android:paddingHorizontal="5dp"
-                    android:text="@string/lb_shares"
-                    android:textColor="@color/colorPrimaryDark" />
-
-                <ImageButton
-                    android:id="@+id/bt_cancel_shares"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="15dp"
-                    android:background="@null"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_cancel" />
-            </RelativeLayout>
-
-            <RelativeLayout
                 android:id="@+id/grp_order_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/grp_shares"
+                android:layout_below="@id/grp_target"
                 android:layout_marginTop="8dp"
                 android:minHeight="60dp">
 
@@ -249,16 +210,6 @@
                     android:padding="10dp"
                     android:src="@drawable/ic_cancel" />
             </RelativeLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_suggestion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/grp_shares"
-                android:background="@android:color/white"
-                android:elevation="4dp"
-                android:outlineProvider="bounds"
-                android:visibility="gone" />
         </RelativeLayout>
     </ScrollView>
 

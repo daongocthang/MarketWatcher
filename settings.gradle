@@ -12,6 +12,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Trading Plan"
+rootProject.name = "Market Watcher"
 include ':app'
 include ':droid'

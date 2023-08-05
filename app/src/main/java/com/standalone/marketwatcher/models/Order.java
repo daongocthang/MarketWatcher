@@ -1,21 +1,20 @@
-package com.standalone.tradingplan.models;
+package com.standalone.marketwatcher.models;
 
 import com.standalone.droid.dbase.Column;
 
 import java.io.Serializable;
 
 public class Order implements Serializable, Comparable<Order> {
-    public static int SELL = 0;
-    public static int BUY = 1;
+    public static int SHORT = 0;
+    public static int LONG = 1;
 
     @Column(primary = true)
     int id;
     @Column
-    String symbol;
+    String code;
     @Column
-    double price;
-    @Column
-    long shares;
+    double target;
+
     @Column
     String message;
     @Column
@@ -30,7 +29,7 @@ public class Order implements Serializable, Comparable<Order> {
         try {
             return other.getDate().compareTo(this.getDate());
         } catch (RuntimeException e) {
-            return this.getSymbol().compareTo(other.getSymbol());
+            return this.getCode().compareTo(other.getCode());
         }
     }
 
@@ -50,28 +49,20 @@ public class Order implements Serializable, Comparable<Order> {
         this.date = date;
     }
 
-    public String getSymbol() {
-        return symbol;
+    public String getCode() {
+        return code;
     }
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public double getPrice() {
-        return price;
+    public double getTarget() {
+        return target;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public long getShares() {
-        return shares;
-    }
-
-    public void setShares(long shares) {
-        this.shares = shares;
+    public void setTarget(double target) {
+        this.target = target;
     }
 
     public String getMessage() {

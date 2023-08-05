@@ -1,4 +1,4 @@
-package com.standalone.tradingplan.models;
+package com.standalone.marketwatcher.models;
 
 
 import com.google.gson.annotations.SerializedName;

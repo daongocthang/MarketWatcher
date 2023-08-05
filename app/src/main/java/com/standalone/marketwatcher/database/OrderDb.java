@@ -1,9 +1,9 @@
-package com.standalone.tradingplan.database;
+package com.standalone.marketwatcher.database;
 
 import android.content.Context;
 
 import com.standalone.droid.dbase.SqLiteBase;
-import com.standalone.tradingplan.models.Order;
+import com.standalone.marketwatcher.models.Order;
 
 public class OrderDb extends SqLiteBase<Order> {
 

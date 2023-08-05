@@ -1,9 +1,9 @@
-package com.standalone.tradingplan.database;
+package com.standalone.marketwatcher.database;
 
 import android.content.Context;
 
 import com.standalone.droid.dbase.SqLiteBase;
-import com.standalone.tradingplan.models.StockInfo;
+import com.standalone.marketwatcher.models.StockInfo;
 
 
 public class StockDb extends SqLiteBase<StockInfo> {

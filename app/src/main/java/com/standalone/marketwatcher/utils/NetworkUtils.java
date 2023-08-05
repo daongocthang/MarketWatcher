@@ -1,4 +1,4 @@
-package com.standalone.tradingplan.utils;
+package com.standalone.marketwatcher.utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

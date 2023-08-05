@@ -1,4 +1,4 @@
-package com.standalone.tradingplan.activities;
+package com.standalone.marketwatcher.activities;
 
 import android.app.PendingIntent;
 import android.content.DialogInterface;
@@ -14,19 +14,20 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.standalone.droid.adapters.RecyclerItemTouchHelper;
-import com.standalone.droid.services.Scheduler;
+import com.standalone.droid.services.AlarmScheduler;
 import com.standalone.droid.utils.Alerts;
-import com.standalone.tradingplan.R;
-import com.standalone.tradingplan.adapters.OrderAdapter;
-import com.standalone.tradingplan.database.OrderDb;
-import com.standalone.tradingplan.database.StockDb;
-import com.standalone.tradingplan.models.Order;
-import com.standalone.tradingplan.models.StockInfo;
-import com.standalone.tradingplan.models.StockRealTime;
-import com.standalone.tradingplan.receivers.MarketWatcher;
-import com.standalone.tradingplan.requests.Broker;
-import com.standalone.tradingplan.utils.NetworkUtils;
-import com.standalone.tradingplan.utils.TradingHours;
+import com.standalone.droid.utils.ListUtils;
+import com.standalone.marketwatcher.R;
+import com.standalone.marketwatcher.adapters.OrderAdapter;
+import com.standalone.marketwatcher.database.OrderDb;
+import com.standalone.marketwatcher.database.StockDb;
+import com.standalone.marketwatcher.models.Order;
+import com.standalone.marketwatcher.models.StockInfo;
+import com.standalone.marketwatcher.models.StockRealTime;
+import com.standalone.marketwatcher.receivers.AlarmReceiver;
+import com.standalone.marketwatcher.requests.Broker;
+import com.standalone.marketwatcher.utils.NetworkUtils;
+import com.standalone.marketwatcher.utils.TradingHours;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,14 +38,13 @@ import java.util.function.Predicate;
 
 public class MainActivity extends AppCompatActivity {
     public final String TAG = MainActivity.this.getClass().getSimpleName();
-    static final int ALARM_REQUEST_CODE = 1;
 
     OrderDb orderdb;
     OrderAdapter adapter;
 
     AlertDialog progressDialog;
 
-    Scheduler scheduler;
+    AlarmScheduler alarmScheduler;
 
 
     @Override
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        scheduler = Scheduler.from(this);
+        alarmScheduler = AlarmScheduler.from(this);
 
         httpRequest();
 
@@ -75,12 +75,12 @@ public class MainActivity extends AppCompatActivity {
         adapter.loadItemList();
         asyncStockRealTimes();
 
-        PendingIntent pendingIntent = scheduler.getBroadcast(ALARM_REQUEST_CODE, MarketWatcher.class);
+        PendingIntent pendingIntent = alarmScheduler.getBroadcast(0, AlarmReceiver.class);
 
         if (adapter.getItemCount() > 0) {
-            scheduler.setRepeatingAlarm(pendingIntent, System.currentTimeMillis(), TradingHours.getTimeMillis());
+            alarmScheduler.setAlarm(pendingIntent, TradingHours.getTimeMillis());
         } else {
-            scheduler.cancelAlarm(pendingIntent);
+            alarmScheduler.cancelAlarm(pendingIntent);
         }
     }
 
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         if (!NetworkUtils.isNetworkAvailable(this)) return;
 
         List<String> distinctList = new ArrayList<>();
-        orderdb.fetchAll().stream().filter(distinctByKey(Order::getStockNo)).forEach(s -> distinctList.add(s.getStockNo()));
+        orderdb.fetchAll().stream().filter(ListUtils.distinctByKey(Order::getStockNo)).forEach(s -> distinctList.add(s.getStockNo()));
 
 
         Broker.fetchStockRealTimes(this, distinctList, new Broker.OnResponseListener<List<StockRealTime>>() {
@@ -153,10 +153,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
-        Map<Object, Boolean> map = new ConcurrentHashMap<>();
-        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
-    }
 
     public class ItemTouchCallback extends RecyclerItemTouchHelper {
 

@@ -18,12 +18,12 @@ import java.util.Random;
 public class NotifyMe {
     private final static long[] VibrationPattern = new long[]{100, 1000, 200, 340};
 
-    public static void post(Context context, String channelId, int icon, String title, String content, PendingIntent link) {
+    public static void post(Context context, String channelId, int icon, String title, String content, PendingIntent pendingIntent) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(icon)
                 .setContentTitle(title)
                 .setContentText(content)
-                .setContentIntent(link)
+                .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat manager = NotificationManagerCompat.from(context);

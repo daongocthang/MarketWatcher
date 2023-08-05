@@ -1,19 +1,18 @@
 <resources>
-    <string name="app_name">Trading Plan</string>
+    <string name="app_name">Market Watcher</string>
     <string name="activity_editor">Editor</string>
     <!-- Samples -->
     <string name="symbol">AAA</string>
     <string name="zero">0.00</string>
-    <string name="sell">SELL</string>
+    <string name="order_type">LONG</string>
     <string name="date">YYYY-MM-DD</string>
     <string-array name="order_type_array">
         <item>SHORT</item>
         <item>LONG</item>
     </string-array>
     <!-- Labels -->
-    <string name="lb_symbol">Symbol</string>
-    <string name="lb_price">Price</string>
-    <string name="lb_shares">Shares</string>
+    <string name="lb_code">Code</string>
+    <string name="lb_target">Target</string>
     <string name="lb_market">Market</string>
     <string name="lb_date">Date</string>
     <string name="lb_status">Status</string>
@@ -22,5 +21,6 @@
     <string name="lb_save">Save</string>
     <string name="lb_cancel">Type</string>
     <string name="item1">item1</string>
+    <string name="matched">MATCHED</string>
 
 </resources>

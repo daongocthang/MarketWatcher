@@ -1,4 +1,4 @@
-package com.standalone.tradingplan.activities;
+package com.standalone.marketwatcher.activities;
 
 import android.os.Bundle;
 import android.view.View;
@@ -14,20 +14,18 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.standalone.droid.dbase.SqLiteManager;
 import com.standalone.droid.utils.Alerts;
 import com.standalone.droid.utils.Humanize;
 import com.standalone.droid.utils.ViewUtils;
-import com.standalone.tradingplan.R;
-import com.standalone.tradingplan.database.OrderDb;
-import com.standalone.tradingplan.database.StockDb;
-import com.standalone.tradingplan.models.Order;
-import com.standalone.tradingplan.models.StockInfo;
-import com.standalone.tradingplan.models.StockRealTime;
-import com.standalone.tradingplan.requests.Broker;
-import com.standalone.tradingplan.utils.NetworkUtils;
+import com.standalone.marketwatcher.R;
+import com.standalone.marketwatcher.database.OrderDb;
+import com.standalone.marketwatcher.database.StockDb;
+import com.standalone.marketwatcher.models.Order;
+import com.standalone.marketwatcher.models.StockInfo;
+import com.standalone.marketwatcher.models.StockRealTime;
+import com.standalone.marketwatcher.requests.Broker;
+import com.standalone.marketwatcher.utils.NetworkUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,9 +38,8 @@ import java.util.Map;
 
 public class EditorActivity extends AppCompatActivity {
     Spinner selOrderType;
-    AutoCompleteTextView edtSymbol;
-    EditText edtPrice;
-    EditText edtShares;
+    AutoCompleteTextView edtCode;
+    EditText edtTarget;
     EditText edtMessage;
     TextView tvDate;
     Map<String, String> stockMap;
@@ -61,9 +58,8 @@ public class EditorActivity extends AppCompatActivity {
         progressDialog = Alerts.createProgressBar(this, com.standalone.droid.R.layout.simple_progress_dialog);
 
         selOrderType = findViewById(R.id.sel_order_type);
-        edtSymbol = findViewById(R.id.ed_symbol);
-        edtPrice = findViewById(R.id.ed_price);
-        edtShares = findViewById(R.id.ed_shares);
+        edtCode = findViewById(R.id.ed_code);
+        edtTarget = findViewById(R.id.ed_target);
         edtMessage = findViewById(R.id.ed_message);
         tvDate = findViewById(R.id.ed_date);
 
@@ -76,8 +72,8 @@ public class EditorActivity extends AppCompatActivity {
         stockInfoList.forEach(s -> stockMap.put(s.code, s.stockNo));
 
         codeList = new ArrayList<>(stockMap.keySet());
-        edtSymbol.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, codeList));
-        edtSymbol.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        edtCode.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, codeList));
+        edtCode.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 hintPrice();
@@ -86,15 +82,9 @@ public class EditorActivity extends AppCompatActivity {
 
         View view = getWindow().getDecorView().getRootView();
 
-        ViewUtils.addCancelButton(view, edtSymbol, R.id.bt_cancel_symbol);
-        ViewUtils.addCancelButton(view, edtPrice, R.id.bt_cancel_price);
-        ViewUtils.addCancelButton(view, edtShares, R.id.bt_cancel_shares);
+        ViewUtils.addCancelButton(view, edtCode, R.id.bt_cancel_symbol);
+        ViewUtils.addCancelButton(view, edtTarget, R.id.bt_cancel_price);
         ViewUtils.addCancelButton(view, edtMessage, R.id.bt_cancel_message);
-
-        final RecyclerView recyclerView = findViewById(R.id.rv_suggestion);
-        recyclerView.setVisibility(View.VISIBLE);
-        ViewUtils.setNumberSuggestion(this, edtShares, recyclerView, 1, 5, true);
-
 
         // Fill fields if exists
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -111,10 +101,9 @@ public class EditorActivity extends AppCompatActivity {
             isUpdate = true;
 
             orderId = extra.getId();
-            edtSymbol.setText(extra.getSymbol());
+            edtCode.setText(extra.getCode());
             tvDate.setText(extra.getDate());
-            edtPrice.setText(Humanize.doubleComma(extra.getPrice()));
-            edtShares.setText(String.format(Locale.US, "%,d",extra.getShares()));
+            edtTarget.setText(Humanize.doubleComma(extra.getTarget()));
             selOrderType.setSelection(extra.getType());
             edtMessage.setText(extra.getMessage());
 
@@ -131,22 +120,22 @@ public class EditorActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!ViewUtils.validateRequiredField(edtSymbol) || !ViewUtils.validateRequiredField(edtPrice) || !ViewUtils.validateRequiredField(edtShares)) {
+                if (!ViewUtils.validateRequiredField(edtCode) || !ViewUtils.validateRequiredField(edtTarget)) {
                     return;
                 }
 
                 //TODO: validate Symbol field
-                if (stockMap.containsKey(edtSymbol.getText().toString().toUpperCase())) {
+                if (stockMap.containsKey(edtCode.getText().toString().toUpperCase())) {
                     onSave();
                 } else {
-                    edtSymbol.setError("No code found matching the query", null);
+                    edtCode.setError("No code found matching the query", null);
                 }
             }
         });
     }
 
     private void hintPrice() {
-        String code = edtSymbol.getText().toString();
+        String code = edtCode.getText().toString();
         if (!NetworkUtils.isNetworkAvailable(EditorActivity.this) || !stockMap.containsKey(code))
             return;
 
@@ -155,7 +144,7 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onResponse(List<StockRealTime> stockRealTimes) {
                 stockRealTimes.stream().filter(s -> s.stockSymbol.equals(code))
-                        .findFirst().ifPresent(stockRealTime -> edtPrice.setHint(String.format(Locale.US, "%,.2f", (double) stockRealTime.getPrice() / 1000)));
+                        .findFirst().ifPresent(stockRealTime -> edtTarget.setHint(String.format(Locale.US, "%,.2f", (double) stockRealTime.getPrice() / 1000)));
 
                 progressDialog.dismiss();
             }
@@ -168,30 +157,23 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void onSave() {
-        String inputSymbol = edtSymbol.getText().toString().toUpperCase();
+        String inputSymbol = edtCode.getText().toString().toUpperCase();
 
         double inputPrice;
         try {
-            inputPrice = Double.parseDouble(edtPrice.getText().toString());
+            inputPrice = Double.parseDouble(edtTarget.getText().toString());
         } catch (NumberFormatException e) {
             inputPrice = 0.0;
         }
 
-        int inputShares;
-        try {
-            inputShares = Integer.parseInt(edtShares.getText().toString().replace(",", ""));
-        } catch (NumberFormatException e) {
-            inputShares = 0;
-        }
 
         String stockNo = stockMap.get(inputSymbol);
 
         Order order = new Order();
         order.setStockNo(stockNo);
         order.setId(orderId);
-        order.setSymbol(inputSymbol);
-        order.setPrice(inputPrice);
-        order.setShares(inputShares);
+        order.setCode(inputSymbol);
+        order.setTarget(inputPrice);
         order.setDate(tvDate.getText().toString());
         order.setType(selOrderType.getSelectedItemPosition());
         order.setMessage(edtMessage.getText().toString());

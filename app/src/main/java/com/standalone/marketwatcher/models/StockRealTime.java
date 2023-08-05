@@ -1,11 +1,11 @@
-package com.standalone.tradingplan.models;
+package com.standalone.marketwatcher.models;
 
 import android.content.Context;
 
 import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
-import com.standalone.tradingplan.R;
+import com.standalone.marketwatcher.R;
 
 import java.lang.reflect.Field;
 import java.util.StringJoiner;

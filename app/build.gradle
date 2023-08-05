@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.standalone.tradingplan'
+    namespace 'com.standalone.marketwatcher'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.standalone.tradingplan"
+        applicationId "com.standalone.marketwatcher"
         minSdk 24
         targetSdk 33
         versionCode 1

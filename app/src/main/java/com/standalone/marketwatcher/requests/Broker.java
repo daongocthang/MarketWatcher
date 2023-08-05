@@ -1,4 +1,4 @@
-package com.standalone.tradingplan.requests;
+package com.standalone.marketwatcher.requests;
 
 import android.content.Context;
 import android.util.Log;
@@ -10,8 +10,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
 import com.standalone.droid.requests.HttpVolley;
-import com.standalone.tradingplan.models.StockInfo;
-import com.standalone.tradingplan.models.StockRealTime;
+import com.standalone.marketwatcher.models.StockInfo;
+import com.standalone.marketwatcher.models.StockRealTime;
 
 import org.json.JSONArray;
 import org.json.JSONException;
