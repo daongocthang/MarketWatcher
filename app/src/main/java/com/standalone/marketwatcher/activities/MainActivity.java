@@ -3,6 +3,7 @@ package com.standalone.marketwatcher.activities;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import com.standalone.droid.adapters.RecyclerItemTouchHelper;
 import com.standalone.droid.services.AlarmScheduler;
 import com.standalone.droid.utils.Alerts;
 import com.standalone.droid.utils.ListUtils;
+import com.standalone.droid.utils.NotifyMe;
 import com.standalone.marketwatcher.R;
 import com.standalone.marketwatcher.adapters.OrderAdapter;
 import com.standalone.marketwatcher.database.OrderDb;
@@ -51,6 +53,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotifyMe.createChannel(this,AlarmReceiver.CHANNEL_ID,"Market Watcher Notification");
+        }
 
         alarmScheduler = AlarmScheduler.from(this);
 

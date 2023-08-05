@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class AlarmReceiver extends BroadcastReceiver {
-    static final String CHANNEL_ID = "MatchedMarketPrices";
+    public static final String CHANNEL_ID = "MatchedMarketPrices";
 
     @Override
     public void onReceive(Context context, Intent intent) {
