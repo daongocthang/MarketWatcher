@@ -33,10 +33,6 @@ import com.standalone.marketwatcher.utils.TradingHours;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class MainActivity extends AppCompatActivity {
     public final String TAG = MainActivity.this.getClass().getSimpleName();
@@ -81,14 +77,6 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
         adapter.loadItemList();
         asyncStockRealTimes();
-
-        PendingIntent pendingIntent = alarmScheduler.getBroadcast(0, AlarmReceiver.class);
-
-        if (adapter.getItemCount() > 0) {
-            alarmScheduler.setAlarm(pendingIntent, TradingHours.getTimeMillis());
-        } else {
-            alarmScheduler.cancelAlarm(pendingIntent);
-        }
     }
 
     @Override
@@ -96,6 +84,18 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onStop() {
+        PendingIntent pendingIntent = alarmScheduler.getBroadcast(0, AlarmReceiver.class);
+        if (adapter.getItemCount() > 0) {
+            alarmScheduler.setAlarm(pendingIntent, TradingHours.getTimeMillis());
+        } else {
+            alarmScheduler.cancelAlarm(pendingIntent);
+        }
+
+        super.onStop();
     }
 
     @Override
