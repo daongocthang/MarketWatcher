@@ -5,8 +5,12 @@ import com.standalone.droid.dbase.Column;
 import java.io.Serializable;
 
 public class Order implements Serializable, Comparable<Order> {
-    public static int SHORT = 0;
-    public static int LONG = 1;
+    public static int TYPE_SHORT = 0;
+    public static int TYPE_LONG = 1;
+
+    public static int STATUS_MATCHING_ORDER = 1;
+    public static int STATUS_PENDING_ORDER = 0;
+
 
     @Column(primary = true)
     int id;
@@ -23,6 +27,9 @@ public class Order implements Serializable, Comparable<Order> {
     String date;
     @Column
     String stockNo;
+
+    @Column
+    int status;
 
     @Override
     public int compareTo(Order other) {
@@ -89,4 +96,11 @@ public class Order implements Serializable, Comparable<Order> {
         this.stockNo = stockNo;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }

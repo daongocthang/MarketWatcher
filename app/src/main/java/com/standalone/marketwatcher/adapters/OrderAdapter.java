@@ -89,7 +89,7 @@ public class OrderAdapter extends AdapterFilterable<Order, OrderAdapter.ViewHold
 
         int colorNegative = ContextCompat.getColor(getContext(), R.color.negative);
         int colorAccent = ContextCompat.getColor(getContext(), R.color.accent);
-        holder.tvOrderType.setTextColor(order.getType() == Order.LONG ? colorAccent : colorNegative);
+        holder.tvOrderType.setTextColor(order.getType() == Order.TYPE_LONG ? colorAccent : colorNegative);
 
         StockRealTime s = find(order.getStockNo());
         if (s != null) {
@@ -99,9 +99,9 @@ public class OrderAdapter extends AdapterFilterable<Order, OrderAdapter.ViewHold
 
             boolean hidden = true;
 
-            if (order.getTarget() <= mp && order.getType() == Order.LONG) {
+            if (order.getTarget() <= mp && order.getType() == Order.TYPE_LONG) {
                 hidden = false;
-            } else if (order.getTarget() >= mp && order.getType() == Order.SHORT) {
+            } else if (order.getTarget() >= mp && order.getType() == Order.TYPE_SHORT) {
                 hidden = false;
             }
 

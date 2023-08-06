@@ -21,6 +21,6 @@
     <string name="lb_save">Save</string>
     <string name="lb_cancel">Type</string>
     <string name="item1">item1</string>
-    <string name="matched">MATCHED</string>
+    <string name="matching_order">MATCHING</string>
 
 </resources>

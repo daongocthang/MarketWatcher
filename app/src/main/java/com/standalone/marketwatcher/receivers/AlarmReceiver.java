@@ -25,25 +25,32 @@ import java.util.Locale;
 public class AlarmReceiver extends BroadcastReceiver {
     public static final String CHANNEL_ID = "MatchedMarketPrices";
 
+    Context context;
+    OrderDb db;
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
+        this.context = context;
+        db = new OrderDb(context);
+
         Calendar calendar = Calendar.getInstance();
         if (TradingHours.marketOpening(calendar) && NetworkUtils.isNetworkAvailable(context)) {
-            onMarketWatching(context);
+            onMarketWatching();
         }
 
         // set Alarm Schedule
-        setSchedule(context);
+        setSchedule();
     }
 
-    void setSchedule(Context context) {
+    void setSchedule() {
         AlarmScheduler scheduler = AlarmScheduler.from(context);
         PendingIntent pendingIntent = scheduler.getBroadcast(0, AlarmReceiver.class);
         scheduler.setAlarm(pendingIntent, TradingHours.getTimeMillis());
     }
 
-    void onMarketWatching(Context context) {
-        List<Order> orderList = new OrderDb((context)).fetchAll();
+    void onMarketWatching() {
+        List<Order> orderList = db.fetchAll();
         List<String> watchList = new ArrayList<>();
         orderList.stream().filter(ListUtils.distinctByKey(Order::getStockNo)).forEach(s -> watchList.add(s.getStockNo()));
         Broker.fetchStockRealTimes(context, watchList, new Broker.OnResponseListener<List<StockRealTime>>() {
@@ -53,7 +60,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                     StockRealTime stockRealTime = stockRealTimes.stream().filter(s -> s.stockNo.equals(order.getStockNo())).findFirst().orElse(null);
                     if (stockRealTime == null) continue;
 
-                    notifyIfMatched(context, order, stockRealTime.getPrice());
+                    notifyIfMatching(order, stockRealTime.getPrice());
                 }
             }
 
@@ -64,18 +71,31 @@ public class AlarmReceiver extends BroadcastReceiver {
         });
     }
 
-    void notifyIfMatched(Context context, Order order, long marketPrice) {
+    void notifyIfMatching(Order order, long marketPrice) {
         int type = order.getType();
         long price = (long) (order.getTarget() * 1000);
-        boolean matched = (type == Order.LONG && price >= marketPrice) || (type == Order.SHORT && price <= marketPrice);
+        boolean matching = (type == Order.TYPE_LONG && price >= marketPrice) || (type == Order.TYPE_SHORT && price <= marketPrice);
 
-        if (!matched) return;
+        if (!matching) {
+            if (order.getStatus() == Order.STATUS_MATCHING_ORDER) {
+                order.setStatus(Order.STATUS_PENDING_ORDER);
+                db.update(order);
+            }
+
+            return;
+        }
+
+        if (order.getStatus() == Order.STATUS_MATCHING_ORDER) return;
+
 
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss", Locale.getDefault());
 
         String content = order.getCode() + " " + order.getMessage() + " in " + sdf.format(cal.getTime());
         NotifyMe.post(context, CHANNEL_ID, R.drawable.ic_calendar, "MarketWatcher", content, null);
+
+        order.setStatus(Order.STATUS_MATCHING_ORDER);
+        db.update(order);
     }
 
 
