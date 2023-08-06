@@ -92,7 +92,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss", Locale.getDefault());
 
         String content = order.getCode() + " " + order.getMessage() + " in " + sdf.format(cal.getTime());
-        NotifyMe.post(context, CHANNEL_ID, R.drawable.ic_calendar, "MarketWatcher", content, null);
+        NotifyMe.post(context, CHANNEL_ID, R.drawable.ic_candlestick_chart, "MarketWatcher", content, null);
 
         order.setStatus(Order.STATUS_MATCHING_ORDER);
         db.update(order);
