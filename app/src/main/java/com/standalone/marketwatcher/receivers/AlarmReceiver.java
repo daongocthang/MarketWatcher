@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.standalone.droid.services.AlarmScheduler;
 import com.standalone.droid.utils.ListUtils;
@@ -33,17 +34,17 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         this.context = context;
         db = new OrderDb(context);
-
+        Log.e(getClass().getSimpleName(), "Alarm running");
         Calendar calendar = Calendar.getInstance();
         if (TradingHours.marketOpening(calendar) && NetworkUtils.isNetworkAvailable(context)) {
             onMarketWatching();
         }
 
         // set Alarm Schedule
-        setSchedule();
+        scheduleAlarms();
     }
 
-    void setSchedule() {
+    void scheduleAlarms() {
         AlarmScheduler scheduler = AlarmScheduler.from(context);
         PendingIntent pendingIntent = scheduler.getBroadcast(0, AlarmReceiver.class);
         scheduler.setAlarm(pendingIntent, TradingHours.getTimeMillis());

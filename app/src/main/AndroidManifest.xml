@@ -36,6 +36,8 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="LockedOrientationActivity" />
+
+        <receiver android:name=".receivers.AlarmReceiver" />
     </application>
 
 </manifest>

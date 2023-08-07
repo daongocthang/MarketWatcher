@@ -5,8 +5,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -14,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.standalone.droid.adapters.RecyclerItemTouchHelper;
 import com.standalone.droid.services.AlarmScheduler;
 import com.standalone.droid.utils.Alerts;
@@ -32,6 +36,7 @@ import com.standalone.marketwatcher.utils.NetworkUtils;
 import com.standalone.marketwatcher.utils.TradingHours;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,9 +55,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final FloatingActionButton fab = findViewById(R.id.bt_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openEditorActivity(null);
+            }
+        });
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotifyMe.createChannel(this,AlarmReceiver.CHANNEL_ID,"Market Watcher Notification");
+            NotifyMe.createChannel(this, AlarmReceiver.CHANNEL_ID, "Market Watcher Notification");
         }
 
         alarmScheduler = AlarmScheduler.from(this);
@@ -87,7 +100,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.bt_notification) {
+            setAlarmScheduler();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    void setAlarmScheduler() {
         PendingIntent pendingIntent = alarmScheduler.getBroadcast(0, AlarmReceiver.class);
         if (adapter.getItemCount() > 0) {
             alarmScheduler.setAlarm(pendingIntent, TradingHours.getTimeMillis());
@@ -95,16 +116,7 @@ public class MainActivity extends AppCompatActivity {
             alarmScheduler.cancelAlarm(pendingIntent);
         }
 
-        super.onStop();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_item_add) {
-            openEditorActivity(null);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        Toast.makeText(this, "Alarm Schedule Set.", Toast.LENGTH_SHORT).show();
     }
 
     private void openEditorActivity(Order order) {
