@@ -8,7 +8,7 @@ public class TradingHours {
     static final int[] CLOSING_IN_MORNING = {11, 30};
     static final int[] OPENING_IN_AFTERNOON = {13, 0};
     static final int[] CLOSING_IN_AFTERNOON = {15, 0};
-    static final long PERIOD_OF_WATCHING = 300000;// INTERVAL_FIVE_MINUTES = 5*60*1000
+    static final long PERIOD_OF_WATCHING = 300000; // FIVE_MINUTES = 5 minutes * 60 seconds * 1000 milliseconds
 
     static boolean greaterOrEqual(int[] time, Calendar calendar) {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -35,7 +35,7 @@ public class TradingHours {
     public static long getTimeMillis() {
         Calendar calendar = Calendar.getInstance();
 
-        if (marketOpening(calendar)) return PERIOD_OF_WATCHING;
+        if (marketOpening(calendar)) return calendar.getTimeInMillis() + PERIOD_OF_WATCHING;
 
         int startedTimeInHours = OPENING_IN_MORNING[0];
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);

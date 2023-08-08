@@ -54,6 +54,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         List<Order> orderList = db.fetchAll();
         List<String> watchList = new ArrayList<>();
         orderList.stream().filter(ListUtils.distinctByKey(Order::getStockNo)).forEach(s -> watchList.add(s.getStockNo()));
+        if (watchList.size() == 0) return;
         Broker.fetchStockRealTimes(context, watchList, new Broker.OnResponseListener<List<StockRealTime>>() {
             @Override
             public void onResponse(List<StockRealTime> stockRealTimes) {
@@ -75,7 +76,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     void notifyIfMatching(Order order, long marketPrice) {
         int type = order.getType();
         long price = (long) (order.getTarget() * 1000);
-        boolean matching = (type == Order.TYPE_LONG && price >= marketPrice) || (type == Order.TYPE_SHORT && price <= marketPrice);
+        boolean matching = (type == Order.TYPE_LONG && price <= marketPrice) || (type == Order.TYPE_SHORT && price >= marketPrice);
 
         if (!matching) {
             if (order.getStatus() == Order.STATUS_MATCHING_ORDER) {

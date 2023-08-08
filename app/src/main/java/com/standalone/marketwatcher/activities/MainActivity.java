@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,9 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.standalone.droid.adapters.RecyclerItemTouchHelper;
 import com.standalone.droid.services.AlarmScheduler;
+import com.standalone.droid.ui.DraggableFloatingActionButton;
 import com.standalone.droid.utils.Alerts;
 import com.standalone.droid.utils.ListUtils;
 import com.standalone.droid.utils.NotifyMe;
@@ -36,11 +35,9 @@ import com.standalone.marketwatcher.utils.NetworkUtils;
 import com.standalone.marketwatcher.utils.TradingHours;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    public final String TAG = MainActivity.this.getClass().getSimpleName();
 
     OrderDb orderdb;
     OrderAdapter adapter;
@@ -55,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final FloatingActionButton fab = findViewById(R.id.bt_fab);
+        final DraggableFloatingActionButton fab = findViewById(R.id.bt_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -12,7 +12,7 @@
         android:nestedScrollingEnabled="true"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.standalone.droid.ui.DraggableFloatingActionButton
         android:id="@+id/bt_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
