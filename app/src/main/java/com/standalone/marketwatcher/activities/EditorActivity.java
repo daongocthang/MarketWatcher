@@ -25,7 +25,7 @@ import com.standalone.marketwatcher.models.Order;
 import com.standalone.marketwatcher.models.StockInfo;
 import com.standalone.marketwatcher.models.StockRealTime;
 import com.standalone.marketwatcher.requests.Broker;
-import com.standalone.marketwatcher.utils.NetworkUtils;
+import com.standalone.marketwatcher.utils.AppUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -136,7 +136,7 @@ public class EditorActivity extends AppCompatActivity {
 
     private void hintPrice() {
         String code = edtCode.getText().toString();
-        if (!NetworkUtils.isNetworkAvailable(EditorActivity.this) || !stockMap.containsKey(code))
+        if (!AppUtils.isNetworkAvailable(EditorActivity.this) || !stockMap.containsKey(code))
             return;
 
         progressDialog.show();

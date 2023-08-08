@@ -3,14 +3,11 @@ package com.standalone.marketwatcher.activities;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -31,7 +28,7 @@ import com.standalone.marketwatcher.models.StockInfo;
 import com.standalone.marketwatcher.models.StockRealTime;
 import com.standalone.marketwatcher.receivers.AlarmReceiver;
 import com.standalone.marketwatcher.requests.Broker;
-import com.standalone.marketwatcher.utils.NetworkUtils;
+import com.standalone.marketwatcher.utils.AppUtils;
 import com.standalone.marketwatcher.utils.TradingHours;
 
 import java.util.ArrayList;
@@ -80,7 +77,16 @@ public class MainActivity extends AppCompatActivity {
 
         asyncStockRealTimes();
 
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        if (prefs.getBoolean("FIRST_RUN", true)) {
+            PendingIntent pendingIntent = alarmScheduler.getBroadcast(0, AlarmReceiver.class);
+            alarmScheduler.setAlarm(pendingIntent, TradingHours.getTimeMillis());
+
+            prefs.edit().putBoolean("FIRST_RUN", false).apply();
+        }
+
     }
+
 
     @Override
     protected void onRestart() {
@@ -89,32 +95,6 @@ public class MainActivity extends AppCompatActivity {
         asyncStockRealTimes();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.bt_notification) {
-            setAlarmScheduler();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    void setAlarmScheduler() {
-        PendingIntent pendingIntent = alarmScheduler.getBroadcast(0, AlarmReceiver.class);
-        if (adapter.getItemCount() > 0) {
-            alarmScheduler.setAlarm(pendingIntent, TradingHours.getTimeMillis());
-        } else {
-            alarmScheduler.cancelAlarm(pendingIntent);
-        }
-
-        Toast.makeText(this, "Alarm Schedule Set.", Toast.LENGTH_SHORT).show();
-    }
 
     private void openEditorActivity(Order order) {
         Intent intent = new Intent(this, EditorActivity.class);
@@ -127,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void httpRequest() {
         StockDb stockDb = new StockDb(this);
-        if (stockDb.getCount() > 0 || !NetworkUtils.isNetworkAvailable(this)) return;
+        if (stockDb.getCount() > 0 || !AppUtils.isNetworkAvailable(this)) return;
 
         progressDialog = Alerts.createProgressBar(this, com.standalone.droid.R.layout.simple_progress_dialog);
         progressDialog.show();
@@ -150,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void asyncStockRealTimes() {
-        if (!NetworkUtils.isNetworkAvailable(this)) return;
+        if (!AppUtils.isNetworkAvailable(this)) return;
 
         List<String> distinctList = new ArrayList<>();
         orderdb.fetchAll().stream().filter(ListUtils.distinctByKey(Order::getStockNo)).forEach(s -> distinctList.add(s.getStockNo()));

@@ -7,15 +7,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
 import java.util.Calendar;
 
 public class AlarmScheduler {
-    private Context context;
+    @SuppressLint("StaticFieldLeak")
+    static AlarmScheduler self;
+    Context context;
 
     public static AlarmScheduler from(Context context) {
-        AlarmScheduler self = new AlarmScheduler();
+        if (self == null) self = new AlarmScheduler();
         self.context = context;
         return self;
     }

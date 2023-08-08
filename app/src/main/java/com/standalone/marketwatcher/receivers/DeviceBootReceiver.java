@@ -15,11 +15,7 @@ public class DeviceBootReceiver extends BroadcastReceiver {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             AlarmScheduler scheduler = AlarmScheduler.from(context);
             PendingIntent pendingIntent = scheduler.getBroadcast(0, AlarmReceiver.class);
-
             scheduler.setAlarm(pendingIntent, TradingHours.getTimeMillis());
-
-            Toast.makeText(context, "Alarm Schedule Set.", Toast.LENGTH_SHORT).show();
-
         }
     }
 }

@@ -14,7 +14,7 @@ import com.standalone.marketwatcher.database.OrderDb;
 import com.standalone.marketwatcher.models.Order;
 import com.standalone.marketwatcher.models.StockRealTime;
 import com.standalone.marketwatcher.requests.Broker;
-import com.standalone.marketwatcher.utils.NetworkUtils;
+import com.standalone.marketwatcher.utils.AppUtils;
 import com.standalone.marketwatcher.utils.TradingHours;
 
 import java.text.SimpleDateFormat;
@@ -29,14 +29,13 @@ public class AlarmReceiver extends BroadcastReceiver {
     Context context;
     OrderDb db;
 
-
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
         db = new OrderDb(context);
         Log.e(getClass().getSimpleName(), "Alarm running");
         Calendar calendar = Calendar.getInstance();
-        if (TradingHours.marketOpening(calendar) && NetworkUtils.isNetworkAvailable(context)) {
+        if (TradingHours.marketOpening(calendar) && AppUtils.isNetworkAvailable(context)) {
             onMarketWatching();
         }
 
@@ -52,9 +51,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     void onMarketWatching() {
         List<Order> orderList = db.fetchAll();
+        if (orderList.size() == 0) return;
+
         List<String> watchList = new ArrayList<>();
         orderList.stream().filter(ListUtils.distinctByKey(Order::getStockNo)).forEach(s -> watchList.add(s.getStockNo()));
-        if (watchList.size() == 0) return;
         Broker.fetchStockRealTimes(context, watchList, new Broker.OnResponseListener<List<StockRealTime>>() {
             @Override
             public void onResponse(List<StockRealTime> stockRealTimes) {
