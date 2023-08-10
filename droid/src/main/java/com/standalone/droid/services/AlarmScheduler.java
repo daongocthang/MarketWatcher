@@ -74,4 +74,14 @@ public class AlarmScheduler {
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         manager.cancel(pendingIntent);
     }
+
+    public void setAlarm(int requestCode, Class<? extends BroadcastReceiver> className, long triggerAtMillis) {
+        PendingIntent pendingIntent = getBroadcast(requestCode, className);
+        setAlarm(pendingIntent, triggerAtMillis);
+    }
+
+    public void cancelAlarm(int requestCode, Class<? extends BroadcastReceiver> className) {
+        PendingIntent pendingIntent = getBroadcast(requestCode, className);
+        cancelAlarm(pendingIntent);
+    }
 }

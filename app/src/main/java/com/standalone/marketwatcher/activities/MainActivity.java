@@ -3,9 +3,9 @@ package com.standalone.marketwatcher.activities;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     AlertDialog progressDialog;
 
     AlarmScheduler alarmScheduler;
+    boolean alarmRunning;
 
 
     @Override
@@ -77,16 +78,10 @@ public class MainActivity extends AppCompatActivity {
 
         asyncStockRealTimes();
 
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-        if (prefs.getBoolean("FIRST_RUN", true)) {
-            PendingIntent pendingIntent = alarmScheduler.getBroadcast(0, AlarmReceiver.class);
-            alarmScheduler.setAlarm(pendingIntent, TradingHours.getTimeMillis());
-
-            prefs.edit().putBoolean("FIRST_RUN", false).apply();
+        if (adapter.getItemCount() > 0) {
+            alarmScheduler.setAlarm(AlarmReceiver.REQUEST_ALARM, AlarmReceiver.class, TradingHours.getTimeMillis());
         }
-
     }
-
 
     @Override
     protected void onRestart() {
@@ -167,6 +162,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onPositive(DialogInterface dialog, int which) {
                     adapter.removeItem(position);
+                    if (adapter.getItemCount() == 0) {
+                        alarmScheduler.cancelAlarm(AlarmReceiver.REQUEST_ALARM, AlarmReceiver.class);
+                    }
                 }
 
                 @Override

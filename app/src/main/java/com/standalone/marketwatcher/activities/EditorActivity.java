@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.standalone.droid.services.AlarmScheduler;
 import com.standalone.droid.utils.Alerts;
 import com.standalone.droid.utils.Humanize;
 import com.standalone.droid.utils.ViewUtils;
@@ -24,8 +25,10 @@ import com.standalone.marketwatcher.database.StockDb;
 import com.standalone.marketwatcher.models.Order;
 import com.standalone.marketwatcher.models.StockInfo;
 import com.standalone.marketwatcher.models.StockRealTime;
+import com.standalone.marketwatcher.receivers.AlarmReceiver;
 import com.standalone.marketwatcher.requests.Broker;
 import com.standalone.marketwatcher.utils.AppUtils;
+import com.standalone.marketwatcher.utils.TradingHours;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -135,6 +138,8 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void hintPrice() {
+        if (!AppUtils.isNetworkAvailable(this)) return;
+
         String code = edtCode.getText().toString();
         if (!AppUtils.isNetworkAvailable(EditorActivity.this) || !stockMap.containsKey(code))
             return;
@@ -143,8 +148,7 @@ public class EditorActivity extends AppCompatActivity {
         Broker.fetchStockRealTimes(EditorActivity.this, Collections.singletonList(stockMap.get(code)), new Broker.OnResponseListener<List<StockRealTime>>() {
             @Override
             public void onResponse(List<StockRealTime> stockRealTimes) {
-                stockRealTimes.stream().filter(s -> s.stockSymbol.equals(code))
-                        .findFirst().ifPresent(stockRealTime -> edtTarget.setHint(String.format(Locale.US, "%,.2f", (double) stockRealTime.getPrice() / 1000)));
+                stockRealTimes.stream().filter(s -> s.stockSymbol.equals(code)).findFirst().ifPresent(stockRealTime -> edtTarget.setHint(String.format(Locale.US, "%,.2f", (double) stockRealTime.getPrice() / 1000)));
 
                 progressDialog.dismiss();
             }
@@ -184,6 +188,9 @@ public class EditorActivity extends AppCompatActivity {
         } else {
             db.insert(order);
         }
+
+        AlarmScheduler.from(this).setAlarm(AlarmReceiver.REQUEST_ALARM, AlarmReceiver.class, TradingHours.getTimeMillis());
+
 
         Toast.makeText(this, "Order saved successfully.", Toast.LENGTH_SHORT).show();
 
