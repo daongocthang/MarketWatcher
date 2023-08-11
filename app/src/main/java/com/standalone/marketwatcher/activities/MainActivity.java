@@ -1,6 +1,5 @@
 package com.standalone.marketwatcher.activities;
 
-import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -32,6 +31,7 @@ import com.standalone.marketwatcher.utils.AppUtils;
 import com.standalone.marketwatcher.utils.TradingHours;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {

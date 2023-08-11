@@ -46,6 +46,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
 
         Log.e(getClass().getSimpleName(), "Alarm running");
+
         Calendar calendar = Calendar.getInstance();
         if (TradingHours.marketOpening(calendar) && AppUtils.isNetworkAvailable(context)) {
             onMarketWatching();

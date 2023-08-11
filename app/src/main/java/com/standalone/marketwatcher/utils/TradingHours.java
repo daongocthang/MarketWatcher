@@ -1,5 +1,7 @@
 package com.standalone.marketwatcher.utils;
 
+import android.util.Log;
+
 import java.util.Calendar;
 
 
@@ -13,13 +15,18 @@ public class TradingHours {
     static boolean greaterOrEqual(int[] time, Calendar calendar) {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
-        return hour >= time[0] && minute >= time[1];
+        if (hour < time[0]) return false;
+        if (hour > time[0]) return true;
+        return minute >= time[1];
     }
 
     static boolean lessOrEqual(int[] time, Calendar calendar) {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
-        return hour <= time[0] && minute <= time[1];
+        if (hour > time[0]) return false;
+        if (hour < time[0]) return true;
+
+        return minute <= time[1];
     }
 
     public static boolean marketOpening(Calendar calendar) {
